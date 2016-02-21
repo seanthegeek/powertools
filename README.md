@@ -12,3 +12,9 @@ By defualt, the PowerShell [execution policy](https://technet.microsoft.com/en-u
 Or use the `Bypass` switch when you run the script:
 
     PowerShell.exe -ExecutionPolicy Bypass -File runme.ps1
+    
+## Getting help
+
+On Linux/BSD/Unix systems, you may be used to using `--help` on `man`, or `/?` on Windows. To get help with a powershell commandlet or script use `Get-Help -Full`:
+
+    Get-Help -Full runme.ps1 | more
