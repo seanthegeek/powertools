@@ -15,6 +15,6 @@ Or use the `Bypass` switch when you run the script:
     
 ## Getting help
 
-On Linux/BSD/Unix systems, you may be used to using `--help` or `man`, or `/?` on Windows. To get help with a powershell commandlet or script use `Get-Help -Full`:
+On Linux/BSD/Unix systems, you may be used to using `--help` or `man`, or `/?` on Windows. To get help with a PowerShell commandlet or script use `Get-Help -Full`:
 
     Get-Help -Full runme.ps1 | more
