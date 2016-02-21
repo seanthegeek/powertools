@@ -9,6 +9,6 @@ By defualt, the PowerShell [execution policy](https://technet.microsoft.com/en-u
 
     PowerShell.exe Set-ExecutionPolicy -Force 'Unrestricted' -Scope CurrentUser
     
-Or use the `bypass` switch when you run the script
+Or use the `Bypass` switch when you run the script:
 
     PowerShell.exe -ExecutionPolicy Bypass -File runme.ps1
