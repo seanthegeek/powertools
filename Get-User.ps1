@@ -98,6 +98,7 @@ PS C:\> get-user users.txt 14 | Out-GridView
 https://github.com/seanthegeek/powertools
 #>
 
+#Requires -Version 3
 
 [CmdletBinding()] param(
   [Parameter(,Position = 0,Mandatory = $true)]
