@@ -32,7 +32,7 @@ Phone
 MemberOf
 WhenCreated
 HireDate
-PasswordDoesNotExpire
+PasswordNeverExpires
 PasswordExpired
 PasswordSet
 LoggedOnRecently
@@ -98,6 +98,7 @@ PS C:\> get-user users.txt 14 | Out-GridView
 https://github.com/seanthegeek/powertools
 #>
 
+#Requires -Version 2
 
 [CmdletBinding()] param(
   [Parameter(,Position = 0,Mandatory = $true)]
@@ -138,8 +139,7 @@ function Get-User {
   $user = $user.Properties
   $disabled = $false
   $lockedOut = $false
-  $passwordDoesNotExpire = $false
-  $cantChangePassword = $false
+  $passwordNeverExpires = $false
   $passwordExpired = $false
   $smartcardRequired = $false
   $loggedOnRecently = $true
@@ -147,8 +147,7 @@ function Get-User {
   $lastLogonTimestamp = [datetime]::FromFileTime([string]($user.lastlogontimestamp))
   if ($lastLogonTimestamp -lt ((Get-Date).AddDays($recentLogonThreshold * -1))) { $loggedOnRecently = $False }
   if (([int64][string]$user.useraccountcontrol -band 2) -ne 0) { $disabled = $true }
-  if (([int64][string]$user.useraccountcontrol -band 65536) -ne 0) { $passwordDoesNotExpire = $true }
-  if (([int64][string]$user.useraccountcontrol -band 64) -ne 0) { $cantChangePassword = $true }
+  if (([int64][string]$user.useraccountcontrol -band 65536) -ne 0) { $passwordNeverExpires = $true }
   if (([int64][string]$user.useraccountcontrol -band 8388608) -ne 0) { $passwordExpired = $true }
   if (([int64][string]$user.useraccountcontrol -band 262144) -ne 0) { $smartcardRequired = $true }
   if ($user.lockouttime -gt 0) { $lockedOut = [datetime]::FromFileTime([string]$user.lockouttime) }
@@ -196,7 +195,7 @@ function Get-User {
     'MemberOf' = toString $user.memberof;
     'WhenCreated' = toDatetime $user.whencreated;
     'HireDate' = toDatetime $user.hiredate;
-    'PasswordDoesNotExpire' = $passwordDoesNotExpire;
+    'PasswordNeverExpires' = $passwordNeverExpires;
     'PasswordExpired' = $passwordExpired;
     'PasswordSet' = $passwordLastSet;
     'LoggedOnRecently' = $loggedOnRecently;
