@@ -23,11 +23,19 @@ limitations under the License.
     
 .DESCRIPTION
 Searches files for matching strings. Intended for searching data dumps.
- 
-.EXAMPLE
-PS C:\> get-msert.ps1
+
+.PARAMETER InputFiles
+
+A filename or wildcard matching the file(s) to search.
+Optional - *.txt by default
+    
+.PARAMETER SearchList
+    
+The path to a file containing a list of strings to search for, such as domain names.
+Optional - mydomains.csv by defualt
 
 .LINK
+
 https://github.com/seanthegeek/powertools
 #>
 
@@ -42,7 +50,7 @@ https://github.com/seanthegeek/powertools
 
 $ErrorActionPreference = "Stop"
 
-$Results = ""
+$Results = New-Object System.Collections.ArrayList
 
 
 Get-Content $SearchList| ForEach-Object {
@@ -55,11 +63,12 @@ Get-Content $SearchList| ForEach-Object {
             $SubResults | ForEach-Object {
             $MatchString = $_.ToString()
             $SplitString = $MatchString.split(":")
-            $Matchstring = $SplitString[2..($Splitstring.Length-1)] -join ","
-            $Results += $MatchString + "`r`n"
+            $Matchstring = $SplitString[2..($Splitstring.Length-1)] -join ":"
+            $Results.Add($MatchString) | Out-Null
             }
         }
     }
 }
 
-$Results | Sort-Object | Get-Unique
+$Results | Sort-Object -Unique
+
