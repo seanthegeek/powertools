@@ -33,8 +33,8 @@ def msert_log():
         file = request.files[list(request.files.keys())[0]]
         filename = secure_filename(file.filename)
         computer_name = filename.split("_")[1].split(".")[-2]
-        subject = "Microsoft Safety Scanner log from {0}.".format(computer_name)
-        body = "Please see the attached {0}".format(subject)
+        subject = "Microsoft Safety Scanner log from {0}".format(computer_name)
+        body = "Please see the attached {0}.".format(subject)
 
         msg = Message(sender=app.config['MAIL_FROM'],
                       recipients=app.config['MAIL_RECIPIENTS'],
