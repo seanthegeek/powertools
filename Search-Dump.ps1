@@ -45,13 +45,11 @@ https://github.com/seanthegeek/powertools
   [string]$InputFiles = "*.txt",
   [Parameter(Position = 1)]
   [String]$SearchList = "mydomains.csv"
-   
 )
 
 $ErrorActionPreference = "Stop"
 
 $Results = New-Object System.Collections.ArrayList
-
 
 Get-Content $SearchList| ForEach-Object {
 
