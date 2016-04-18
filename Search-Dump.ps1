@@ -41,7 +41,7 @@ https://github.com/seanthegeek/powertools
 
 
 [CmdletBinding()] param(
-  [Parameter(,Position = 0)]
+  [Parameter(Position = 0)]
   [string]$InputFiles = "*.txt",
   [Parameter(Position = 1)]
   [String]$SearchList = "mydomains.csv"
