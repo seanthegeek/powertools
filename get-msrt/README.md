@@ -11,7 +11,6 @@ Setting up the web server
 -------------------------
 
 Install the dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~
     
     $ sudo apt-get install git python-pip
     $ git clone https://github.com/seanthegeek/powertools
@@ -19,20 +18,18 @@ Install the dependencies
     $ sudo pip install -r requirements.txt
     
 Edit the mail configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     $ nano config.py
     
 Run the server
-~~~~~~~~~~~~~~
 
     $ python logmailer.py &
-    
+
 Ensure that TCP port 5000 is reachable
 
 Using the script
 ----------------
 
-Edit the `$LogServer` variable to math the log server address.
+Edit the `$LogServer` variable in `get-msert.ps1` to match the log server address.
  
 Run `get-msert.ps1` as `Administrator`
