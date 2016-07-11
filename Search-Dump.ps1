@@ -3,7 +3,7 @@
 Searches files for matching strings. Intended for searching data dumps.
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.0.1
+Version: 1.0.2
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -55,7 +55,7 @@ Get-Content $SearchList| ForEach-Object {
 
     if ($_ -ne $Null)
     { 
-        $SubResults = (Select-String -Path $InputFiles -Pattern $_ -SimpleMatch -AllMatches)
+        $SubResults = (Get-ChildItem $InputFiles -Recurse | Select-String-Pattern $_ -SimpleMatch -AllMatches)
         if ($SubResults -ne $Null)
         {
             $SubResults | ForEach-Object {
