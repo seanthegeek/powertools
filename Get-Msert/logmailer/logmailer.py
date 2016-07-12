@@ -42,7 +42,7 @@ def msert_log():
                       body=body)
 
         msg.attach(filename=log.filename, content_type="text/plain",
-        data=log.read())
+                   data=log.read())
 
         mail.send(msg)
 
