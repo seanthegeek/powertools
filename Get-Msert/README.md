@@ -1,8 +1,9 @@
 Get-Msert.ps1
 =============
 
-Downloads and runs Microsoft Safety Scanner for silent remediation,
-then sends the logs to a web server.
+Downloads and runs [Microsoft Safety Scanner](https://www.microsoft.com/security/scanner/en-us/default.aspx)
+for silent remediation of common threats, then sends the logs to a web server
+that emails them to the security team.
 
 `logmailer` is a Python/Flask-based web server that accepts logs from
 `get-msert.ps1`, and emails them to analysts.
