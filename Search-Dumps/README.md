@@ -5,7 +5,6 @@ A simple script for searching through a dump of data, such as compromised
 credentials. It has been tested to work with GNU/Linux, MacOS, and Cygwin Bash.
 For a Bash version of this script, see
 [search-dump.sh](https://github.com/seanthegeek/toolbox/blob/master/search-dump.sh).
-It's faster.
 
 Assumptions
 -----------

@@ -20,22 +20,19 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
+    
 .DESCRIPTION
 Searches files for matching strings. Intended for searching data dumps.
 
 .PARAMETER InputFiles
 
 A filename or wildcard matching the file(s) to search.
-
 Optional - *.txt by default
-
+    
 .PARAMETER SearchList
-
-The path to a file containing a list of strings to search for, such as domain
-names, one per line.
-
-Optional - mydomains.csv by default
+    
+The path to a file containing a list of strings to search for, such as domain names.
+Optional - mydomains.csv by defualt
 
 .LINK
 
@@ -57,13 +54,13 @@ $Results = New-Object System.Collections.ArrayList
 Get-Content $SearchList| ForEach-Object {
 
     if ($_ -ne $Null)
-    {
-        $SubResults = (Get-ChildItem $InputFiles -Recurse | Select-String-Pattern $_ -SimpleMatch -AllMatches)
+    { 
+        $SearchString = "\b" + $_ + "\b"
+        $SubResults = (Get-ChildItem $InputFiles -Recurse | Select-String $SearchString -AllMatches)
         if ($SubResults -ne $Null)
         {
             $SubResults | ForEach-Object {
             $MatchString = $_.ToString()
-            # Remove full path and line number from the output
             $SplitString = $MatchString.split(":")
             $MatchString = $SplitString[3..($SplitString.Length-1)] -join ":"
             $Results.Add($MatchString) | Out-Null
@@ -73,3 +70,4 @@ Get-Content $SearchList| ForEach-Object {
 }
 
 $Results | Sort-Object -Unique
+
