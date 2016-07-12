@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-A simple web app for emailing logs from Get-mmsert.ps1
+A simple web app for emailing logs from Get-Mmsert.ps1
 
 Copyright 2016 Sean Whalen
 
@@ -30,8 +30,8 @@ mail = Mail(app)
 @app.route('/msert', methods=["POST"])
 def msert_log():
     if request.method == 'POST':
-        file = request.files[list(request.files.keys())[0]]
-        filename = secure_filename(file.filename)
+        log = request.files[list(request.files.keys())[0]]
+        filename = secure_filename(log.filename)
         computer_name = filename.split("_")[1].split(".")[-2]
         subject = "Microsoft Safety Scanner log from {0}".format(computer_name)
         body = "Please see the attached {0}.".format(subject)
@@ -41,8 +41,11 @@ def msert_log():
                       subject=subject,
                       body=body)
 
-        msg.attach(filename=file.filename, content_type="text/plain", data=file.read())
+        msg.attach(filename=log.filename, content_type="text/plain",
+        data=log.read())
+
         mail.send(msg)
+
         return ""
 
 if __name__ == '__main__':
