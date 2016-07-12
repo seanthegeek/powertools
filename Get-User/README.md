@@ -46,17 +46,18 @@ user properties:
 Parameters
 ----------
 
-1. **SAMAccountNames** (String, Required)
+ **SAMAccountNames** (String, Required)
 
 One or more account usernames, separated by commas, or a path to a text file
 containing one username per line.
 
-__Domain prefixes and suffixes are ignored.__
+Domain prefixes and suffixes are ignored.
 
-2. **recentLogonThreshold** (Integer, Optional)
+**recentLogonThreshold** (Integer, Optional)
 
-The threshold number of days considered "recent". 30 by default. Cannot be
-lower than 14.
+The threshold number of days considered "recent".
+
+30 by default. Cannot be lower than 14.
 
 Examples
 --------
@@ -80,4 +81,4 @@ Output the results to a CSV file:
 
 Output the results to a searchable and sortable GUI:
 
-PS C:\> get-user users.txt 14 | Out-GridView
+    PS C:\> get-user users.txt 14 | Out-GridView

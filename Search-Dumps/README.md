@@ -24,18 +24,18 @@ search
 
 Like any other command, you can redirect the output to a file:
 
-    search-dump.sh > output.csv
+    Search-Dump.ps1 > output.csv
 
 Parameters
 ----------
 
-1. **InputFiles** (String, Optional)
+**InputFiles** (String, Optional)
 
 A filename or wildcard matching the file(s) to search. `*.txt` by default.
 
 __Domain prefixes and suffixes are ignored.__
 
-2. **SearchList** (String, Optional)
+**SearchList** (String, Optional)
 
 The path to a file containing a list of strings to search for, such as domain
 names, one per line. `mydomains.csv` by default.
