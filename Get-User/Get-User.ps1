@@ -1,13 +1,15 @@
 ﻿<#
 .SYNOPSIS
-Returns Active Directory details for the given user account(s). Useful for IT support,
-information security teams, and pentesters. Only properties that are reliably replicated
-are included. The returned object can be used with Export-CSV and other useful outputs.
+Returns Active Directory details for the given user account(s). Useful for IT
+support, information security teams, and pentesters. Only properties that are
+reliably replicated are included. The returned object can be used with
+Export-CSV and other useful outputs.
 
-Rather than using a combination of the GAL, Active Directory Users and Computers, and/or
-SharePoint, users can use this script to obtain the following user properties:  
+Rather than using a combination of the GAL, Active Directory Users and
+Computers, and/or SharePoint, staff can use this script to obtain the following
+user properties:
 
-SAMAccountName	
+SAMAccountName
 Name
 Title
 JobFamilyDescription
@@ -16,7 +18,7 @@ BusinessSegmentDescription
 Company
 EmployeeNumber
 JobTrack
-DestinguishedName
+DistinguishedName
 Manager
 CostCenter
 Room
@@ -26,7 +28,7 @@ StreetAddress
 City
 State
 PostalCode
-Courtry
+Country
 Email
 Phone
 MemberOf
@@ -61,17 +63,18 @@ limitations under the License.
 
 .DESCRIPTION
 
-Returns Active Directory details for the given user account(s). Useful for IT support,
-information security teams, and pentesters.
+Returns Active Directory details for the given user account(s). Useful for IT
+support, information security teams, and pentesters.
 
 .PARAMETER SAMAccountNames
 
-One or more account usernames, seperated by commas, oe  a path to a text file containing usernames. 
-Domain prefixes and suffexes are ignored.
- 
+One or more account usernames, separated by commas, or a path to a text file
+containing one username per line. Domain prefixes and suffixes are ignored.
+
 .PARAMETER recentLogonThreshold
 
-The threshold number of days considered "recent". 30 by default. Cannot be lower than 14.
+The threshold number of days considered "recent". 30 by default. Cannot be lower
+than 14.
 
 .EXAMPLE
 
@@ -84,7 +87,7 @@ PS C:\> get-user alice.smith,bob.jackson
 .EXAMPLE
 
 PS C:\> get-user users.txt 14
- 
+
 .EXAMPLE
 
 PS C:\> get-user users.txt 14 | Export-CSV -NoTypeInformation "users.csv"
@@ -179,7 +182,7 @@ function Get-User {
     'Company' = toString $user.company;
     'EmployeeNumber' = toInt $user.employeenumber;
     'JobTrack' = toString $user.jobtrack;
-    'DestinguishedName' = toString $user.distinguishedname;
+    'DistinguishedName' = toString $user.distinguishedname;
     'Manager' = toString $user.manager;
     'CostCenter' = toInt $user.costcenter;
     'Room' = toString $user.roomnumber;
@@ -189,7 +192,7 @@ function Get-User {
     'City' = toString $user.l;
     'State' = toString $user.st;
     'PostalCode' = toString $user.postalcode
-    'Courtry' = toString $user.co
+    'Country' = toString $user.co
     'Email' = toString $user.mail
     'Phone' = toString $user.telephonenumber;
     'MemberOf' = toString $user.memberof;
