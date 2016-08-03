@@ -18,3 +18,7 @@ Or use the `-ExecutionPolicy Bypass` switch when you run the script:
 On Linux/BSD/Unix systems, you may be used to using `--help` or `man`, or `/?` on Windows. To get help with a PowerShell commandlet or script use `Get-Help -Full`:
 
     Get-Help -Full runme.ps1 | more
+
+## See also
+
+- [Toolbox](https://github.com/seanthegeek/toolbox/) other useful, non-PowerShell scripts 
