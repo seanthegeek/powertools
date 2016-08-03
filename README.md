@@ -21,4 +21,4 @@ On Linux/BSD/Unix systems, you may be used to using `--help` or `man`, or `/?` o
 
 ## See also
 
-- [Toolbox](https://github.com/seanthegeek/toolbox/) other useful, non-PowerShell scripts 
+- [Toolbox](https://github.com/seanthegeek/toolbox/) - other useful, non-PowerShell scripts 
