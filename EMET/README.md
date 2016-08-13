@@ -70,6 +70,7 @@ Configures IE and Microsoft Edge to check that certificates for popular services
 
 A feature introduced in Windows 10 that blocks the loading of all fonts that are not from `%WinDir%\Fonts` directory. Prevents attacks from local malicious fonts, and remote fonts, such as from web and email
 
+----------------------------------------------------------------------------------------------
 
 The script can apply three different sets of system-wide settings, `low`, `medium`, and `high`. These settings can be applied to existing EMET installations by using the command line options `/low`, `/medium`, or `/high`. These applied to existing EMET installations without the .NET Framework install or the EMET MSI.
 
