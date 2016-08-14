@@ -32,13 +32,20 @@ The version of the .NET Framework runtime that is included in Windows versions e
 
 Download [`EMET_Setup.msi`](https://www.microsoft.com/en-us/download/details.aspx?id=53354), and place it in the same directory as `emet.ps1`.
 
+### Local installation
+
 Open a PowerShell session as an administrator by right-clicking on PowerShell and clicking "Run as administrator".
 
-`cd` to the directory where `emet.ps1` is located. Then run:
+`cd` to the directory where `Deploy-EMET.ps1` is located. Then run:
 
-    PowerShell -ExecutionPolicy Bypass -File  .\emet.ps1 /install
+    PowerShell -ExecutionPolicy Bypass -File  .\Deploy-EMET.ps1 /install
 
 If the .NET installer `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` is located in the directory, it will be run silently. Next, `EMET_Setup.msi` will be installed, and the default configuration will be applied.
+
+### Remote installation
+
+1. Place `Deploy-EMET.ps1`, `EMET Setup.msi`, and `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` in a new directory named `EMET`.
+2. ZIP up the directory, then place it in a client-accessaible  
 
 Configuration
 -------------
