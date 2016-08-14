@@ -12,61 +12,88 @@ EMET 5.51 install script
     /uninstall - Resets system settings and uninstalls EMET
 
 
-This script is useful for testing EMET, and for situations where configuration through GPOs or SCCM is impractical. It is designed to work with EMET 5.51, which is the latest version of EMET at the time of this writing. I intend to maintain this script to work with newer versions as Microsoft releases them.
+This script is useful for testing EMET, and for situations where configuration
+through GPOs or SCCM is impractical. It is designed to work with EMET 5.51,
+which is the latest version of EMET at the time of this writing.
+I intend to maintain this script to work with newer versions as Microsoft
+releases them.
 
 System Requirements
 -------------------
 
 Supported operating systems:
 
-Windows 10 , Windows 7, Windows 8.1, Windows Server 2008, Windows Server 2012, Windows Server 2012 R2, Windows Vista
+Windows 10 , Windows 7, Windows 8.1, Windows Server 2008, Windows Server 2012,
+Windows Server 2012 R2, Windows Vista
 
 - EMET 5.51 requires .NET Framework 4.5 or higher.
-- For Internet Explorer 10 on Windows 8 you need to install KB2790907 – a mandatory Application Compatibility update that has been released on March 12th, 2013 or any other Application Compatibility updates for Windows 8 after that.
+- For Internet Explorer 10 on Windows 8 you need to install KB2790907 – a
+mandatory Application Compatibility update that has been released on
+March 12th, 2013 or any other Application Compatibility updates for Windows 8
+after that.
 
 
 Setup
 -----
 
-The version of the .NET Framework runtime that is included in Windows versions earlier than Windows 8 is too old to work for EMET. If you are deploying to these older Windows versions, download the [latest .NET Framework runtime installer](https://www.microsoft.com/en-us/download/details.aspx?id=53344) (4.6.2 as of this writing), and place it in the same directory as `emet.ps1`.
+The version of the .NET Framework runtime that is included in Windows versions
+earlier than Windows 8 is too old to work for EMET. If you are deploying to
+these older Windows versions, download the latest
+[.NET Framework runtime installer][.NET] (4.6.2 as of this writing),
+and place it in the same directory as `emet.ps1`.
 
-Download [`EMET_Setup.msi`](https://www.microsoft.com/en-us/download/details.aspx?id=53354), and place it in the same directory as `emet.ps1`.
+Download [`EMET_Setup.msi`][MSI], and place it in the same directory as
+`emet.ps1`.
 
 ### Local installation
 
-Open a PowerShell session as an administrator by right-clicking on PowerShell and clicking "Run as administrator".
+Open a PowerShell session as an administrator by right-clicking on PowerShell
+and clicking "Run as administrator".
 
 `cd` to the directory where `Deploy-EMET.ps1` is located. Then run:
 
     PowerShell -ExecutionPolicy Bypass -File  .\Deploy-EMET.ps1 /install
 
-If the .NET installer `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` is located in the directory, it will be run silently. Next, `EMET_Setup.msi` will be installed, and the default configuration will be applied.
+If the .NET installer `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` is located in
+the directory, it will be run silently. Next, `EMET_Setup.msi` will be
+installed, and the default configuration will be applied.
 
 ### Remote installation
 
-1. Place `Deploy-EMET.ps1`, `EMET Setup.msi`, and `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` in a new directory named `EMET`.
+1. Place `Deploy-EMET.ps1`, `EMET Setup.msi`, and
+`NDP462-KB3151800-x86-x64-AllOS-ENU.exe` in a new directory named `EMET`
 2. ZIP up the directory, then place it in an accessible network share
 3. Update `$RemoteArchivePath` to match the path to the EMET ZIP archive
 3. Adjust the .\Deploy-EMET.ps1 commands as needed
 4. Run
     PowerShell -ExecutionPolicy Bypass -File  .\Remote-Deploy-EMET.ps1
 
+If you need to change the configuration or uninstall EMET, use
+`Deploy-EMET.ps1`:
+
+     cd C:\Deployment\EMET
+     PowerShell -ExecutionPolicy Bypass -File  .\Deploy-EMET.ps1
+
 Configuration
 -------------
 
-EMET has two main types of settings, `system` settings and `application` settings.
+EMET has two main types of settings, `system` settings and `application`
+settings.
 
 ### System settings
 
-The system settings configure system-wide anti-exploit controls that are built-into Windows, including:
+The system settings configure system-wide anti-exploit controls that are
+built-into Windows, including:
 
 #### Data Execution Protection (DEP)
 
-Prevents the execution of code from data sections of memory. This feature is the one that is most likely to break applications that use memory improperly.
+Prevents the execution of code from data sections of memory. This feature is
+the one that is most likely to break applications that use memory improperly.
 
 #### Structured Exception Handler Overwrite Protection (SEHOP)
 
-Ensures that a program only uses exception handlers defined by the application as it was originally compiled.
+Ensures that a program only uses exception handlers defined by the application
+as it was originally compiled.
 
 #### Address Space Layout Randomization (ASLR)
 
@@ -74,23 +101,34 @@ Randomizes address space layout to prevent reliable buffer overflow attacks
 
 #### Certificate Pinning (Pinning)
 
-Configures IE and Microsoft Edge to check that certificates for popular services like Office365 and Facebook match known good versions, and were not generated by a rogue or compromised CA.
+Configures IE and Microsoft Edge to check that certificates for popular
+services like Office365 and Facebook match known good versions, and were not
+generated by a rogue or compromised CA.
 
 
 #### Block untrusted fonts (Fonts)
 
-A feature introduced in Windows 10 that blocks the loading of all fonts that are not from `%WinDir%\Fonts` directory. Prevents attacks from local malicious fonts, and remote fonts, such as from web and email
+A feature introduced in Windows 10 that blocks the loading of all fonts that
+are not from `%WinDir%\Fonts` directory. This prevents attacks from malicious
+local fonts, and remote fonts, such as from web and email
 
 
-The script can apply three different sets of system-wide settings, `low`, `medium`, and `high`. These settings can be applied to existing EMET installations by using the command line options `/low`, `/medium`, or `/high`. These applied to existing EMET installations without the .NET Framework install or the EMET MSI.
+The script can apply three different sets of system-wide settings, `low`,
+`medium`, and `high`. These settings can be applied to existing EMET
+installations by using the command line options `/low`, `/medium`, or `/high`.
+These applied to existing EMET installations without the .NET Framework install
+or the EMET MSI.
 
-When in doubt, try the `high` preset first, as it provides the best protection, and will still very rarely break some exceptionally poorly-written software.
+When in doubt, try the `high` preset first, as it provides the best protection,
+and will still very rarely break some exceptionally poorly-written software.
 
-The script also disables reporting to Microsoft, and hides the EMET tray icon from the user.
+The script also disables reporting to Microsoft, and hides the EMET tray icon
+from the user.
 
 #### low
 
-This is equivalent to the "Recommended security settings" Quick Profile in the EMET GUI.
+This is equivalent to the "Recommended security settings" Quick Profile in the
+EMET GUI.
 
     DEP=ApplicationOptIn
     SEHOP=ApplicationOptIn
@@ -108,7 +146,8 @@ This is equivalent to the "Recommended security settings" Quick Profile in the E
 
 #### high
 
-This is equivalent to the "Maximum security settings" Quick Profile in the EMET GUI.
+This is equivalent to the "Maximum security settings" Quick Profile in the
+EMET GUI.
 
     DEP=AlwaysOn
     SEHOP=AlwaysOn
@@ -118,7 +157,9 @@ This is equivalent to the "Maximum security settings" Quick Profile in the EMET 
 
 ### Application settings
 
-EMET can provide additional protections on a per application basis. Default application configuration profiles are included for many popular applications that are frequent exploit targets, including:
+EMET can provide additional protections on a per application basis. Default
+application configuration profiles are included for many popular applications
+that are frequent exploit targets, including:
 
 - Microsoft
     - Internet Explorer
@@ -173,5 +214,13 @@ EMET can provide additional protections on a per application basis. Default appl
 Resources
 ---------
 
-- [EMET 5.5 Converter](https://www.microsoft.com/en-us/download/details.aspx?id=50801)
-- [EMET 5.51 user guide](https://www.microsoft.com/en-us/download/details.aspx?id=53355)
+- [EMET home page][EMET]
+- [EMET 5.5 converter][converter]
+- [EMET 5.51 user guide][guide]
+
+
+[.NET]: https://www.microsoft.com/en-us/download/details.aspx?id=53344
+[MSI]: https://www.microsoft.com/en-us/download/details.aspx?id=53354
+[EMET]: https://technet.microsoft.com/en-us/security/jj653751
+[converter]: https://www.microsoft.com/en-us/download/details.aspx?id=50801
+[guide]: https://www.microsoft.com/en-us/download/details.aspx?id=53355
