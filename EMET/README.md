@@ -45,7 +45,11 @@ If the .NET installer `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` is located in the
 ### Remote installation
 
 1. Place `Deploy-EMET.ps1`, `EMET Setup.msi`, and `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` in a new directory named `EMET`.
-2. ZIP up the directory, then place it in a client-accessaible  
+2. ZIP up the directory, then place it in an accessible network share
+3. Update `$RemoteArchivePath` to match the path to the EMET ZIP archive
+3. Adjust the .\Deploy-EMET.ps1 commands as needed
+4. Run
+    PowerShell -ExecutionPolicy Bypass -File  .\Remote-Deploy-EMET.ps1
 
 Configuration
 -------------
@@ -77,7 +81,6 @@ Configures IE and Microsoft Edge to check that certificates for popular services
 
 A feature introduced in Windows 10 that blocks the loading of all fonts that are not from `%WinDir%\Fonts` directory. Prevents attacks from local malicious fonts, and remote fonts, such as from web and email
 
-----------------------------------------------------------------------------------------------
 
 The script can apply three different sets of system-wide settings, `low`, `medium`, and `high`. These settings can be applied to existing EMET installations by using the command line options `/low`, `/medium`, or `/high`. These applied to existing EMET installations without the .NET Framework install or the EMET MSI.
 
