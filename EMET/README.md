@@ -64,9 +64,10 @@ installed, and the default configuration will be applied.
 `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` in a new directory named `EMET`
 2. ZIP up the directory, then place it in an accessible network share
 3. Update `$RemoteArchivePath` to match the path to the EMET ZIP archive
-3. Adjust the .\Deploy-EMET.ps1 commands as needed
-4. Run
-    PowerShell -ExecutionPolicy Bypass -File  .\Remote-Deploy-EMET.ps1
+3. Edit the `.\Deploy-EMET.ps1` commands in `Remote-Deploy-EMET.ps1` as needed
+4. Run a command like the one below in a scheduled task or something:
+
+    PowerShell -ExecutionPolicy Bypass -File \\NAS\Remote-Deploy-EMET.ps1
 
 If you need to change the configuration or uninstall EMET, use
 `Deploy-EMET.ps1`:
