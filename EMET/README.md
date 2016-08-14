@@ -40,10 +40,10 @@ The version of the .NET Framework runtime that is included in Windows versions
 earlier than Windows 8 is too old to work for EMET. If you are deploying to
 these older Windows versions, download the latest
 [.NET Framework runtime installer][.NET] (4.6.2 as of this writing),
-and place it in the same directory as `emet.ps1`.
+and place it in the same directory as `Deploy-EMET.ps1`.
 
 Download [`EMET_Setup.msi`][MSI], and place it in the same directory as
-`emet.ps1`.
+`Deploy-EMET.ps1`.
 
 ### Local installation
 
