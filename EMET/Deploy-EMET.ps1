@@ -68,32 +68,24 @@ function disableBDEProtectors {
   $ArgumentList = "-protectors -disable " + $env:SystemDrive
 
   try {
-
     Start-Process "Manage-Bde" -WindowStyle Hidden -ArgumentList $ArgumentList -Passthru -Wait | Out-Null
-
   }
 
   catch [invalidoperationexception]{
 
     # Home systems don't have BitLocker
-
   }
-
 }
 
 function enableBDEProtectors {
   $ArgumentList = "-protectors -enable " + $env:SystemDrive
 
   try {
-
     Start-Process "Manage-Bde" -WindowStyle Hidden -ArgumentList $ArgumentList -Passthru -Wait | Out-Null
-
   }
 
   catch [invalidoperationexception]{
-
     # Home systems don't have BitLocker
-
   }
 }
 
@@ -138,7 +130,6 @@ function setLow {
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList $ArgumentList -Passthru -Wait | Out-Null
 
   postConfig
-
 }
 
 function setMedium {
@@ -251,3 +242,4 @@ else {
 
 Write-Host ""
 Write-Warning "Restart the system to fully apply the changes."
+Write-Host ""
