@@ -151,7 +151,7 @@ function setMedium {
 function setHigh {
   preConfig
 
-  Write-Host "Applying high config..."
+  Write-Host "Applying high configuration..."
 
   $ArgumentList = "--system DEP=AlwaysOn SEHOP=AlwaysOn"
 
