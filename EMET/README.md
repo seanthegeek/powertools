@@ -1,5 +1,8 @@
-EMET 5.51 install script
-========================
+EMET 5.51 install scripts
+=========================
+
+Deploy-EMET.ps1
+---------------
 
     Installs/configures Microsoft's Enhanced Mitigation Experience Toolkit (EMET)
 
