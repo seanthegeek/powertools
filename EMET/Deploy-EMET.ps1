@@ -55,7 +55,7 @@ Usage:
 }
 
 function checkEMET {
-  if (-Not Test-Path $EMETPath) {
+  if (-Not (Test-Path $EMETPath)) {
     throw "EMET is not installed"
   }
 }
