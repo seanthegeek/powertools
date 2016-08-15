@@ -55,11 +55,7 @@ Usage:
 }
 
 function checkEMET {
-  $list = Get-WmiObject Win32_Product | where { $_.Name -Like "EMET *" }
-  $m = $list | measure
-
-  if ($m.Count -ne 1) {
-
+  if (-Not Test-Path $EMETPath) {
     throw "EMET is not installed"
   }
 }
