@@ -120,8 +120,8 @@ local fonts, and remote fonts, such as from web and email
 The script can apply three different sets of system-wide settings, `low`,
 `medium`, and `high`. These settings can be applied to existing EMET
 installations by using the command line options `/low`, `/medium`, or `/high`.
-These applied to existing EMET installations without the .NET Framework install
-or the EMET MSI.
+These can be applied to existing EMET installations without the .NET Framework
+installer or the EMET MSI.
 
 When in doubt, try the `high` preset first, as it provides the best protection,
 and will still very rarely break some exceptionally poorly-written software.
