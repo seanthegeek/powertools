@@ -70,7 +70,7 @@ installed, and the default configuration will be applied.
 3. Edit the `.\Deploy-EMET.ps1` commands in `Remote-Deploy-EMET.ps1` as needed
 4. Run a command like the one below in a scheduled task or something:
 
-`PowerShell -ExecutionPolicy Bypass -File \\NAS\Remote-Deploy-EMET.ps1`
+`C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NoLogo -NonInteractive -ExecutionPolicy Bypass -File \\NAS\Remote-Deploy-EMET.ps1`
 
 If you need to change the configuration or uninstall EMET, use
 `Deploy-EMET.ps1`:
