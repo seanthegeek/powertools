@@ -72,7 +72,6 @@ function disableBDEProtectors {
   }
 
   catch [invalidoperationexception]{
-
     # Home systems don't have BitLocker
   }
 }
