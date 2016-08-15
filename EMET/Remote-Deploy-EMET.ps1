@@ -27,6 +27,12 @@ https://github.com/seanthegeek/powertools/EMET
 
 $ErrorActionPreference = "Stop"
 
+if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(`
+       [Security.Principal.WindowsBuiltInRole]"Administrator"))
+{
+  throw "Please re-run this script as an administrator"
+}
+
 Add-Type -assembly "system.io.compression.filesystem"
 
 $RemoteArchivePath = "\\NAS\Shared\Deployment\EMET.zip"
