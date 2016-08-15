@@ -46,7 +46,9 @@ cd $DeploymentPath
 $Message = "Copying " + $RemoteArchivePath + " to " + $DeploymentPath + "..."
 Write-Host $Message
 Copy-Item $RemoteArchivePath .
-Remove-Item -Recurse -Force "EMET"
+if (Test-Path "EMET") {
+  Remove-Item -Recurse -Force "EMET"
+}
 
 $ArchivePath = $DeploymentPath + "\" + $ArchiveName
 $Message = "Extracting " + $ArchivePath + "..."
