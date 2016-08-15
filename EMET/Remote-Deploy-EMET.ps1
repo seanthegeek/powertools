@@ -27,7 +27,7 @@ https://github.com/seanthegeek/powertools/EMET
 
 $ErrorActionPreference = "Stop"
 
-﻿Add-Type -assembly “system.io.compression.filesystem”
+Add-Type -assembly "system.io.compression.filesystem"
 
 $RemoteArchivePath = "\\NAS\Shared\Deployment\EMET.zip"
 
@@ -37,14 +37,18 @@ $DeploymentPath = $env:SystemDrive + "\Deployment"
 New-Item -ItemType Directory -Force -Path $DeploymentPath | Out-Null
 cd $DeploymentPath
 
-Write-Host "Copying " + $RemoteArchivePath + " to " + $DeploymentPath + "..."
-Copy-Item $ArchivePath .
+$Message = "Copying " + $RemoteArchivePath + " to " + $DeploymentPath + "..."
+Write-Host $Message
+Copy-Item $RemoteArchivePath .
 
 $ArchivePath = $DeploymentPath + "\" + $ArchiveName
-Write-Host "Extracting " + $ArchivePath + "..."
+$Message = "Extracting " + $ArchivePath + "..."
+Write-Host $Message
 [io.compression.zipfile]::ExtractToDirectory($ArchivePath, $DeploymentPath)
 Remove-Item $ArchiveName
 
 cd EMET
 .\Deploy-EMET.ps1 /install
+
+Write-Host "Please wait..."
 .\Deploy-EMET.ps1 /high
