@@ -55,7 +55,7 @@ Usage:
 }
 
 function checkEMET {
-  $list = Get-WmiObject Win32_Product | where { $_.Name.StartsWith("EMET ") }
+  $list = Get-WmiObject Win32_Product | where { $_.Name -Like "EMET *" }
   $m = $list | measure
 
   if ($m.Count -ne 1) {
@@ -201,7 +201,7 @@ function uninstallEMET {
   setLow
   Write-Host "Uninstalling EMET..."
 
-  $listing = Get-WmiObject Win32_Product | where { $_.Name.StartsWith("EMET ") }
+  $listing = Get-WmiObject Win32_Product | where { $_.Name -Like "EMET *" }
 
   [string]$MSIGuid = $listing.IdentifyingNumber
 
