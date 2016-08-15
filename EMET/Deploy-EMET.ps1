@@ -241,4 +241,3 @@ else {
 
 Write-Host ""
 Write-Warning "Restart the system to fully apply the changes."
-Write-Host ""
