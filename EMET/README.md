@@ -168,7 +168,7 @@ that are frequent exploit targets, including:
 - Microsoft
     - Internet Explorer
     - WordPad
-- Windows Media Player
+    - Windows Media Player
     - Skype
     - Lync Communicator
     - Photo Gallery
