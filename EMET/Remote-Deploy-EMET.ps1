@@ -25,6 +25,8 @@ limitations under the License.
 https://github.com/seanthegeek/powertools/EMET
 #>
 
+#requires -Version 3
+
 $ErrorActionPreference = "Stop"
 
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(`
