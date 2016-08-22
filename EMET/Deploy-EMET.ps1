@@ -25,6 +25,7 @@ limitations under the License.
 https://github.com/seanthegeek/powertools/EMET
 #>
 
+#requires -Version 2
 
 [CmdletBinding()] param(
   [Parameter(Position = 0)]
