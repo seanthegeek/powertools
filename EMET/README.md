@@ -4,13 +4,13 @@ EMET 5.51 install scripts
 Deploy-EMET.ps1
 ---------------
 
-    Installs/configures Microsoft's Enhanced Mitigation Experience Toolkit (EMET)
+    Installs/configures Microsoft's Enhanced Mitigation Experience Toolkit (EMET) 5.51
 
     Usage:
 
-    /install   - Install EMET 5.51 and apply low configuration
+    /install   - Install EMET 5.51 and apply medium (CIS benchmark recommended) configuration
     /low       - DEP=ApplicationOptIn SEHOP=ApplicationOptIn ASLR=ApplicationOptIn Pinning=Enabled Fonts=Audit
-    /medium    - DEP=ApplicationOptOut SEHOP=ApplicationOptOut ASLR=ApplicationOptIn Pinning=Enabled Fonts=Audit
+    /medium    - DEP=ApplicationOptOut SEHOP=ApplicationOptOut ASLR=ApplicationOptIn Pinning=Enabled Fonts=AlwaysOn
     /high      - DEP=AlwaysOn SEHOP=AlwaysOn ASLR=ApplicationOptIn Pinning=Enabled Fonts=AlwaysOn
     /uninstall - Resets system settings and uninstalls EMET
 
@@ -67,7 +67,6 @@ installed, and the default configuration will be applied.
 `NDP462-KB3151800-x86-x64-AllOS-ENU.exe` in a new directory named `EMET`
 2. ZIP up the directory, then place it in an accessible network share
 3. Update `$RemoteArchivePath` to match the path to the EMET ZIP archive
-3. Edit the `.\Deploy-EMET.ps1` commands in `Remote-Deploy-EMET.ps1` as needed
 4. Run a command like the one below in a scheduled task or something:
 
 `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NoLogo -NonInteractive -ExecutionPolicy Bypass -File \\NAS\Remote-Deploy-EMET.ps1`

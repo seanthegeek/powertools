@@ -42,13 +42,13 @@ $EMETPath = ${env:ProgramFiles(x86)} + "\EMET 5.5"
 function printHelp {
 
   Write-Host @"
-Installs/configures Microsoft's Enhanced Mitigation Experience Toolkit (EMET)
+Installs/configures Microsoft's Enhanced Mitigation Experience Toolkit (EMET) 5.51
 
 Usage:
 
-/install   - Install EMET 5.51 and apply low configuration
+/install   - Install EMET 5.51 and apply medium (CIS benchmark recommended) configuration
 /low       - DEP=ApplicationOptIn SEHOP=ApplicationOptIn ASLR=ApplicationOptIn Pinning=Enabled Fonts=Audit
-/medium    - DEP=ApplicationOptOut SEHOP=ApplicationOptOut ASLR=ApplicationOptIn Pinning=Enabled Fonts=Audit
+/medium    - DEP=ApplicationOptOut SEHOP=ApplicationOptOut ASLR=ApplicationOptIn Pinning=Enabled Fonts=AlwaysOn
 /high      - DEP=AlwaysOn SEHOP=AlwaysOn ASLR=ApplicationOptIn Pinning=Enabled Fonts=AlwaysOn
 /uninstall - Resets system settings and uninstalls EMET
 "@
@@ -93,7 +93,9 @@ function preConfig {
   disableBDEProtectors
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList '--import "Deployment\Protection Profiles\Popular Software.xml"' -Passthru -Wait | Out-Null
-  Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList '--import "Deployment\Protection Profiles\CertTrust.xml"' -Passthru -Wait | Out-Null
+
+  # Importing certificate pinning configuration would break SSL decryption
+  # Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList '--import "Deployment\Protection Profiles\CertTrust.xml"' -Passthru -Wait | Out-Null
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList "--system ASLR=ApplicationOptIn Pinning=Enabled" -Passthru -Wait | Out-Null
 }
@@ -130,13 +132,13 @@ function setLow {
 function setMedium {
   preConfig
 
-  Write-Host "Applying medium configuration..."
+  Write-Host "Applying medium (CIS benchmark recommended) configuration..."
 
   $ArgumentList = "--system DEP=ApplicationOptOut SEHOP=ApplicationOptOut"
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList $ArgumentList -Passthru -Wait | Out-Null
 
-  $ArgumentList = "--system Fonts=Audit"
+  $ArgumentList = "--system Fonts=AlwaysOn"
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList $ArgumentList -Passthru -Wait | Out-Null
 
@@ -174,7 +176,7 @@ function installEMET {
   cd $MyPath
   Start-Process "msiexec" -WindowStyle Hidden -ArgumentList $ArgumentList -Passthru -Wait | Out-Null
 
-  setLow
+  setMedium
 }
 
 function installDotNET {

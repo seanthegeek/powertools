@@ -59,5 +59,4 @@ Remove-Item $ArchiveName
 cd EMET
 .\Deploy-EMET.ps1 /install
 
-Write-Host "Please wait..."
-.\Deploy-EMET.ps1 /high
+#.\Deploy-EMET.ps1 /high
