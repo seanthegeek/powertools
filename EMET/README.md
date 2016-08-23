@@ -35,6 +35,10 @@ mandatory Application Compatibility update that has been released on
 March 12th, 2013 or any other Application Compatibility updates for Windows 8
 after that.
 
+Script requirements:
+
+- `Deploy-EMET.ps1` - PowerShell >= 2
+- `Remote-Deploy-EMET.ps1` - PowerShell >= 3
 
 Setup
 -----
