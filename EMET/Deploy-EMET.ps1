@@ -49,7 +49,7 @@ Usage:
 
 /install   - Install EMET 5.51 and apply medium (CIS benchmark recommended) configuration
 /low       - DEP=ApplicationOptIn SEHOP=ApplicationOptIn ASLR=ApplicationOptIn Pinning=Enabled Fonts=Audit
-/medium    - DEP=ApplicationOptOut SEHOP=ApplicationOptOut ASLR=ApplicationOptIn Pinning=Enabled Fonts=AlwaysOn
+/medium    - DEP=ApplicationOptOut SEHOP=ApplicationOptOut ASLR=ApplicationOptIn Pinning=Enabled Fonts=Audit
 /high      - DEP=AlwaysOn SEHOP=AlwaysOn ASLR=ApplicationOptIn Pinning=Enabled Fonts=AlwaysOn
 /uninstall - Resets system settings and uninstalls EMET
 "@
@@ -95,7 +95,7 @@ function preConfig {
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList '--import "Deployment\Protection Profiles\Popular Software.xml"' -Passthru -Wait | Out-Null
 
-  # Importing certificate pinning configuration would break SSL decryption
+  # Importing this certificate pinning configuration would break SSL decryption on some popular domains
   # Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList '--import "Deployment\Protection Profiles\CertTrust.xml"' -Passthru -Wait | Out-Null
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList "--system ASLR=ApplicationOptIn Pinning=Enabled" -Passthru -Wait | Out-Null
@@ -139,7 +139,7 @@ function setMedium {
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList $ArgumentList -Passthru -Wait | Out-Null
 
-  $ArgumentList = "--system Fonts=AlwaysOn"
+  $ArgumentList = "--system Fonts=Audit"
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList $ArgumentList -Passthru -Wait | Out-Null
 
