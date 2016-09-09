@@ -3,7 +3,7 @@
 Installs/configures Microsoft's Enhanced Mitigation Experience Toolkit (EMET)
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.0.0
+Version: 1.1.0
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -91,12 +91,15 @@ function preConfig {
   cd $env:SystemDrive
   cd $EMETPath
 
+  $PopularSoftwareXMLPath = $MyPath + "\Popular Software.xml"
+  $CertTrustXMLPath = $MyPath + "\CertTrust.xml"
+
   disableBDEProtectors
 
-  Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList '--import "Deployment\Protection Profiles\Popular Software.xml"' -Passthru -Wait | Out-Null
+  Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList "--import", $PopularSoftwareXMLPath -Passthru -Wait | Out-Null
 
   # Importing this certificate pinning configuration would break SSL decryption on some popular domains
-  # Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList '--import "Deployment\Protection Profiles\CertTrust.xml"' -Passthru -Wait | Out-Null
+  # Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList "--import", $CertTrustXMLPath -Passthru -Wait | Out-Null
 
   Start-Process "EMET_Conf" -WindowStyle Hidden -ArgumentList "--system ASLR=ApplicationOptIn Pinning=Enabled" -Passthru -Wait | Out-Null
 }

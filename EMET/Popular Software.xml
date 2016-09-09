@@ -1,0 +1,323 @@
+<?xml version="1.0"?>
+<!--
+EMET Popular Software protections config. 
+Enables protections for common software such as Internet Explorer, Microsof Office, Windows Media Player, Adobe Acrobat Reader, Java, WinZip, VLC, RealPlayer, QuickTime, Opera, etc.
+
+All applications will have the default mitigations applied to them unless specific mitigations are specified per application.
+Environment variable supported:
+- %ProgramFiles(x86)% - This maps to %ProgramFiles(x86)%. If it's not defined on the system, it will map to %ProgramFiles%.
+- %ProgramFiles% - This maps to %ProgramFiles%. If the Product's Arch property is x64, it will map to the 64 bit program files directory.
+- %Windir% - Windows directory
+- %LOCALAPPDATA% - User local data path
+- %APPDATA% - User roaming data path
+- All other environment variables
+- MinOS - when a mitigation is enabled (=true), it will be applied by default only if minimum OS version is equal or greater of the one specified
+
+Please refer to EMET User's Guide for detailed information on how to use wildcards "*" 
+-->
+
+<EMET_Standard_Rules>
+
+  <!-- Default mitigations will be applied by default to configured programs unless each program explicity enables or disables certain mitigations -->
+  <DefaultConfig>
+    <Mitigations>
+      <Mitigation Name="DEP"            Enabled="true" />
+      <Mitigation Name="SEHOP"          Enabled="true" />
+      <Mitigation Name="NullPage"       Enabled="true" />
+      <Mitigation Name="HeapSpray"      Enabled="true" />
+      <Mitigation Name="EAF"            Enabled="true" />
+      <Mitigation Name="EAF+"           Enabled="false" />
+      <Mitigation Name="MandatoryASLR"  Enabled="true" />
+      <Mitigation Name="BottomUpASLR"   Enabled="true" />
+      <Mitigation Name="LoadLib"        Enabled="true" />
+      <Mitigation Name="MemProt"        Enabled="true" />
+      <Mitigation Name="Caller"         Enabled="true" />
+      <Mitigation Name="SimExecFlow"    Enabled="true" />
+      <Mitigation Name="StackPivot"     Enabled="true" />
+      <Mitigation Name="ASR"            Enabled="false" />
+    </Mitigations>
+  </DefaultConfig>
+
+  <Settings>
+    <ExploitAction Value="StopProgram" />
+    <AdvancedSettings DeepHooks="True" AntiDetours="True" BannedFunctions="True" />
+  </Settings>
+
+  <!-- 
+  ******************************************************************************************************************
+  Suites and programs definitions
+  ******************************************************************************************************************
+  -->
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Microsoft">
+
+    <Product Name="Internet Explorer">
+      <Version Path="*\Internet Explorer\iexplore.exe">
+        <Mitigation Name="EAF+" Enabled="true">
+          <eaf_modules>mshtml.dll;flash*.ocx;jscript*.dll;vbscript.dll;vgx.dll</eaf_modules>
+        </Mitigation>
+        <Mitigation Name="ASR" Enabled="true">
+          <asr_modules>npjpi*.dll;jp2iexp.dll;vgx.dll;msxml4*.dll;wshom.ocx;scrrun.dll;vbscript.dll</asr_modules>
+          <!-- 0 = Local; 1 = Intranet; 2 = Trusted; 3 = Internet; 4 = Untrusted; -->
+          <asr_zones>1;2</asr_zones>
+        </Mitigation>
+      </Version>
+    </Product>
+
+    <Product Name="Wordpad">
+      <Version Path="*\Windows NT\Accessories\wordpad.exe"/>
+    </Product>
+
+    <Product Name="Windows Media player">
+      <Version Path="*\Windows Media Player\wmplayer.exe">
+        <Mitigation Name="SEHOP"  Enabled="true" MinOS="6.1"/>
+        <Mitigation Name="MandatoryASLR"  Enabled="false" />
+        <Mitigation Name="EAF" Enabled="false" />
+      </Version>
+    </Product>
+
+    <Product Name="Skype">
+      <Version Arch="x86" Path="*\Skype\Phone\Skype.exe">
+        <Mitigation Name="EAF" Enabled="false" />
+      </Version>
+    </Product>
+
+    <Product Name="Lync Communicator">
+      <Version Arch="x86" Path="*\Microsoft Lync\communicator.exe"/>
+    </Product>
+
+    <Product Name="Photo Gallery">
+      <Version Path="*\Windows Live\Photo Gallery\WLXPhotoGallery.exe"/>
+    </Product>
+
+    <Suite Name="Live Essentials 2012" Arch="x86">
+      <App Name="Windows Mail" Path="*\Windows Live\Mail\wlmail.exe"/>
+      <App Name="Live Writer" Path="*\Windows Live\Writer\WindowsLiveWriter.exe"/>
+      <App Name="SkyDrive" Path="*\SkyDrive\SkyDrive.exe"/>
+    </Suite>
+
+    <!-- Office Suites 2003, 2007, 2010, 2013, 2016 and Office365 -->
+    <Suite Name="Office" Version="ALL">
+      <App Name="Outlook" Path="*\OFFICE1*\OUTLOOK.EXE"/>
+      <App Name="Word" Path="*\OFFICE1*\WINWORD.EXE">
+        <Mitigation Name="ASR" Enabled="true">
+          <asr_modules>flash*.ocx</asr_modules>
+        </Mitigation>
+      </App>
+      <App Name="Excel" Path="*\OFFICE1*\EXCEL.EXE">
+        <Mitigation Name="ASR" Enabled="true">
+          <asr_modules>flash*.ocx</asr_modules>
+        </Mitigation>
+      </App>
+      <App Name="Power Point" Path="*\OFFICE1*\POWERPNT.EXE">
+        <Mitigation Name="ASR" Enabled="true">
+          <asr_modules>flash*.ocx</asr_modules>
+        </Mitigation>
+      </App>
+      <App Name="Access" Path="*\OFFICE1*\MSACCESS.EXE"/>
+      <App Name="Publisher" Path="*\OFFICE1*\MSPUB.EXE"/>
+      <App Name="InfoPath" Path="*\OFFICE1*\INFOPATH.EXE"/>
+      <App Name="Visio" Path="*\OFFICE1*\VISIO.EXE"/>
+      <App Name="Visio Viewer" Path="*\OFFICE1*\VPREVIEW.EXE"/>
+      <App Name="Lync" Path="*\OFFICE1*\LYNC.EXE"/>
+      <App Name="PowerPoint Viewer" Path="*\OFFICE1*\PPTVIEW.EXE"/>
+      <App Name="Picture Manager" Path="*\OFFICE1*\OIS.EXE"/>
+    </Suite>
+
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Google">
+    <Product Name="Chrome">
+      <Version Arch="x86" Path="*\Google\Chrome\Application\chrome.exe">
+        <Mitigation Name="SEHOP" Enabled="true" MinOS="6.1"/>
+        <Mitigation Name="EAF+" Enabled="false"> <!-- EAF+ breaks latest Chrome -->
+          <eaf_modules>chrome_child.dll</eaf_modules>
+        </Mitigation>
+	
+      </Version>
+    </Product>
+
+    <Product Name="Google Talk">
+      <Version Arch="x86" Path="*\Google\Google Talk\googletalk.exe">
+        <Mitigation Name="DEP" Enabled="false" />
+        <Mitigation Name="SEHOP" Enabled="true" MinOS="6.1"/>
+      </Version>
+    </Product>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Mozilla">
+    <Suite Name="Firefox" Arch="x86">
+      <App Name="Browser" Path="*\Mozilla Firefox\firefox.exe">
+        <Mitigation Name="EAF+" Enabled="true">
+          <eaf_modules>mozjs.dll;xul.dll</eaf_modules>
+        </Mitigation>
+      </App>
+      <App Name="Plugin container" Path="*\Mozilla Firefox\plugin-container.exe"/>
+    </Suite>
+
+    <Suite Name="Firefox Developer Edition">
+      <App Name="Browser" Path="*\Firefox Developer Edition\firefox.exe">
+        <Mitigation Name="EAF+" Enabled="true">
+          <eaf_modules>mozjs.dll;xul.dll</eaf_modules>
+        </Mitigation>
+      </App>
+      <App Name="Plugin container" Path="*\Firefox Developer Edition\plugin-container.exe"/>
+    </Suite>
+
+    <Suite Name="Thunderbird" Arch="x86">
+      <App Name="Mail client" Path="*\Mozilla Thunderbird\thunderbird.exe"/>
+      <App Name="Plugin container" Path="*\Mozilla Thunderbird\plugin-container.exe"/>
+    </Suite>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Adobe">
+
+    <!-- Adobe Photoshop CS ALL-->
+    <Product Name="Photoshop">
+      <Version Name="Photoshop" Path="*\Adobe\Adobe Photoshop CS*\Photoshop.exe"/>
+    </Product>
+
+    <!-- Adobe Acrobat and Acrobat Reader 8,9,10,11 -->
+    <Product Name="Acrobat Reader">
+      <Version Name="Acrobat Reader" Path="*\Adobe\*\Reader\AcroRd32.exe">
+        <Mitigation Name="EAF+" Enabled="true">
+          <eaf_modules>AcroRd32.dll;Acrofx32.dll;AcroForm.api</eaf_modules>
+        </Mitigation>
+      </Version>
+    </Product>
+    <Product Name="Acrobat">
+      <Version Name="Acrobat" Path="*\Adobe\Acrobat*\Acrobat\Acrobat.exe">
+        <Mitigation Name="EAF+" Enabled="true">
+          <eaf_modules>AcroRd32.dll;Acrofx32.dll;AcroForm.api</eaf_modules>
+        </Mitigation>
+      </Version>
+    </Product>
+    
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Nullsoft">
+    <Product Name="Winamp">
+      <Version Arch="x86" Path="*\Winamp\winamp.exe"/>
+    </Product>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Opera Software ASA">
+    <Product Name="Opera Browser">
+      <Version Arch="x86" Path="*\Opera\opera.exe"/>
+    </Product>
+  </Vendor>
+  <Vendor Name="Opera Software ASA">
+    <Product Name="Opera Browser">
+      <Version Arch="x86" Path="*\Opera\*\opera.exe"/>
+    </Product>
+  </Vendor>  
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="RAR Labs">
+    <Suite Name="WinRAR">
+      <App Name="GUI" Path="*\WinRAR\winrar.exe"/>
+      <App Name="Console" Path="*\WinRAR\rar.exe"/>
+      <App Name="Unrar" Path="*\WinRAR\unrar.exe"/>
+    </Suite>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="WinZip Computing">
+    <Product Name="WinZip (x86)">
+      <Version Arch="x86" Path="*\WinZip\winzip32.exe"/>
+    </Product>
+
+    <Product Name="WinZip (x64)">
+      <Version Arch="x64" Path="*\WinZip\winzip64.exe"/>
+    </Product>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="VideoLAN">
+    <Product Name="VLC">
+      <Version Arch="x86" Path="*\VideoLAN\VLC\vlc.exe"/>
+    </Product>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Real Networks">
+    <Suite Name="RealPlayer" Arch="x86">
+      <App Name="Converter" Path="*\Real\RealPlayer\realconverter.exe"/>
+      <App Name="Player" Path="*\Real\RealPlayer\realplay.exe"/>
+    </Suite>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="mIRC Co">
+    <Product Name="mIRC">
+      <Version Arch="x86" Path="*\mIRC\mirc.exe"/>
+    </Product>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="7-Zip">
+    <Suite Name="7-Zip">
+      <App Name="Console command line" Path="*\7-Zip\7z.exe">
+        <Mitigation Name="EAF" Enabled="false" />
+      </App>
+      <App Name="GUI command line" Path="*\7-Zip\7zG.exe">
+        <Mitigation Name="EAF" Enabled="false" />
+      </App>
+      <App Name="File manager" Path="*\7-Zip\7zFM.exe">
+        <Mitigation Name="EAF" Enabled="false" />
+      </App>
+    </Suite>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Apple">
+    <Product Name="Safari">
+      <Version Arch="x86" Path="*\Safari\Safari.exe"/>
+    </Product>
+
+    <Product Name="QuickTime">
+      <Version Arch="x86" Path="*\QuickTime\QuickTimePlayer.exe"/>
+    </Product>
+
+    <Product Name="iTunes">
+      <Version Path="*\iTunes\iTunes.exe"/>
+    </Product>
+
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Pidgin">
+    <Product Name="Pidgin">
+      <Version Arch="x86" Path="*\Pidgin\pidgin.exe"/>
+    </Product>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Oracle">
+      <Suite Name="Java">
+          <App Name="Console" Path="*\Java\jre*\bin\java.exe">
+              <Mitigation Name="HeapSpray" Enabled="false" />
+          </App>
+          <App Name="GUI" Path="*\Java\jre*\bin\javaw.exe">
+              <Mitigation Name="HeapSpray" Enabled="false" />
+          </App>
+          <App Name="Web Start" Path="*\Java\jre*\bin\javaws.exe">
+              <Mitigation Name="HeapSpray" Enabled="false" />
+          </App>
+      </Suite>
+  </Vendor>
+
+  <!-- ****************************************************************************************************************** -->
+  <Vendor Name="Foxit">
+    <Product Name="Foxit Reader">
+      <Version Arch="x86" Path="*\Foxit Reader\Foxit Reader.exe"/>
+    </Product>
+  </Vendor>
+
+</EMET_Standard_Rules>
