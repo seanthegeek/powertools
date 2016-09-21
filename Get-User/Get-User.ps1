@@ -9,6 +9,7 @@ Rather than using a combination of the GAL, Active Directory Users and
 Computers, and/or SharePoint, staff can use this script to obtain the following
 user properties:
 
+UserPrincipalName
 SAMAccountName
 Name
 Title
@@ -43,7 +44,7 @@ LockedOut
 Disabled
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.0.0
+Version: 1.1.0
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -66,10 +67,11 @@ limitations under the License.
 Returns Active Directory details for the given user account(s). Useful for IT
 support, information security teams, and pentesters.
 
-.PARAMETER SAMAccountNames
+.PARAMETER UserIdentifiers
 
-One or more account usernames, separated by commas, or a path to a text file
-containing one username per line. Domain prefixes and suffixes are ignored.
+One or more UPNs, SAM account names, or email addresses, separated by commas,
+or a path to a text file containing one identifier per line. Domain prefixes
+and suffixes are ignored.
 
 .PARAMETER recentLogonThreshold
 
@@ -105,7 +107,7 @@ https://github.com/seanthegeek/powertools
 
 [CmdletBinding()] param(
   [Parameter(,Position = 0,Mandatory = $true)]
-  [string[]]$SAMAccountNames,
+  [string[]]$UserIdentifiers,
   [Parameter(Position = 1)]
   [int]$recentLogonThreshold = 30
 )
@@ -115,7 +117,7 @@ $ErrorActionPreference = "Stop"
 function Get-User {
   [CmdletBinding()] param(
     [Parameter(,Position = 0,Mandatory = $true)]
-    [string]$SAMAccountName,
+    [string]$UserIdentifier,
     [Parameter(Position = 1)]
     [int]$recentLogonThreshold = 30
   )
@@ -124,21 +126,33 @@ function Get-User {
 
   if ($recentLogonThreshold -lt 14) { throw "lastlogontimestamp is not accurate to less than 14 days" }
 
-  $SAMAccountName = $SAMAccountName.Split("\")[-1].Split("@")[0].Trim()
-
-  $strFilter = [string]::Format("(&(objectCategory=User)(samAccountName={0}))",$SAMAccountName)
+  $UserIdentifier = $UserIdentifier.Split("\")[-1]
 
   $objDomain = New-Object System.DirectoryServices.DirectoryEntry
 
   $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
   $objSearcher.SearchRoot = $objDomain
 
-  $objSearcher.Filter = $strFilter
-  $objSearcher.SearchScope = "Subtree"
+  if ($UserIdentifier.Contains("@")) {
+    $strFilter = [string]::Format("(&(objectCategory=User)(userprincipalname={0}))", $UserIdentifier)
+    $objSearcher.Filter = $strFilter
+    $user = $objSearcher.FindOne()
+    if ($user -eq $null) {
+      $strFilter = [string]::Format("(&(objectCategory=User)(mail={0}))", $UserIdentifier)
+      $objSearcher.Filter = $strFilte
+      r$user = $objSearcher.FindOne()
+    }
+  }
+   else {
+     $strFilter = [string]::Format("(&(objectCategory=User)(samaccountname={0}))", $UserIdentifier)
+     $objSearcher.Filter = $strFilter
+     $user = $objSearcher.FindOne()
+   }
 
-
-  $user = $objSearcher.FindOne()
-  if ($user -eq $null) { throw [string]::Format("User {0} was not found",$SAMAccountName) }
+   if ($user -eq $null) {
+     throw [string]::Format("{0} was not found", $UserIdentifier)
+    }
+    
   $user = $user.Properties
   $disabled = $false
   $lockedOut = $false
@@ -173,7 +187,9 @@ function Get-User {
     return [datetime][string]$value
   }
 
-  $userHash = [ordered]@{ 'SAMAccountName' = $SAMAccountName;
+  $userHash = [ordered]@{
+    'UserPrincipalName' = $user.userprincipalname[0]; 
+    'SAMAccountName' = $user.samaccountname[0];
     'Name' = toString $user.name;
     'Title' = toString $user.title;
     'JobFamilyDescription' = toString $user.jobfamilydescription;
@@ -210,19 +226,19 @@ function Get-User {
 
 }
 
-if ($SAMAccountNames.Count -eq 1 -and (Test-Path -PathType Leaf $SAMAccountNames[0])) {
-  $SAMAccountNames = Get-Content $SAMAccountNames[0] | Where-Object { $_ }
+if ($UserIdentifiers.Count -eq 1 -and (Test-Path -PathType Leaf $UserIdentifiers[0])) {
+  $UserIdentifiers = Get-Content $UserIdentifiers[0] | Where-Object { $_ }
 }
 
-if ($SAMAccountNames.Count -eq 1) {
+if ($UserIdentifiers.Count -eq 1) {
 
-  $user = Get-User $SAMAccountNames[0] $recentLogonThreshold
+  $user = Get-User $UserIdentifiers[0] $recentLogonThreshold
   return $user
 
 }
 else {
   $users = @()
-  foreach ($AccountName in $SAMAccountNames) {
+  foreach ($AccountName in $UserIdentifiers) {
     $user = Get-User $AccountName $recentLogonThreshold
     $users += $user
   }
