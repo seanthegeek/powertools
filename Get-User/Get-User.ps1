@@ -140,7 +140,7 @@ function Get-User {
     if ($user -eq $null) {
       $strFilter = [string]::Format("(&(objectCategory=User)(mail={0}))", $UserIdentifier)
       $objSearcher.Filter = $strFilte
-      r$user = $objSearcher.FindOne()
+      $user = $objSearcher.FindOne()
     }
   }
    else {
