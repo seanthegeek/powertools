@@ -139,7 +139,7 @@ function Get-User {
     $user = $objSearcher.FindOne()
     if ($user -eq $null) {
       $strFilter = [string]::Format("(&(objectCategory=User)(mail={0}))", $UserIdentifier)
-      $objSearcher.Filter = $strFilte
+      $objSearcher.Filter = $strFilter
       $user = $objSearcher.FindOne()
     }
   }
@@ -152,7 +152,7 @@ function Get-User {
    if ($user -eq $null) {
      throw [string]::Format("{0} was not found", $UserIdentifier)
     }
-    
+  
   $user = $user.Properties
   $disabled = $false
   $lockedOut = $false
