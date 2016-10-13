@@ -120,6 +120,7 @@ https://github.com/seanthegeek/powertools/tree/master/Get-User
 )
 
 $ErrorActionPreference = "Stop"
+$FormatEnumerationLimit = -1
 
 function Get-User {
   [CmdletBinding()] param(
@@ -128,6 +129,47 @@ function Get-User {
   )
 
   $ErrorActionPreference = "Stop"
+    $FormatEnumerationLimit = -1
+
+  $proporties = @(
+    "userPrincipalName",
+    "sAMAccountName",
+    "name",
+    "title",
+    "jobTrack",
+    "department",
+    "jobFamilyDescription",
+    "businessUnitDescription",
+    "businessSegmentDescription",
+    "company",
+    "employeeNumber",
+    "employeeClass",
+    "employeeType",
+    "distinguishedName",
+    "manager"
+    "costCenter",
+    "roomNumber",
+    "siteCode",
+    "siteName",
+    "physicalDeliveryOfficeName",
+    "streetAddress",
+    "l",
+    "st"
+    "postalCode",
+    "co",
+    "mail",
+    "telephoneNumber",
+    "homeDirectory",
+    "hireDate",
+    "reHireDate",
+    "memberOf"
+    "proxyAddresses",
+    "userAccountControl",
+    "lastLogonTimestamp",
+    "pwdLastSet",
+    "lockoutTime",
+    "whenCreated"
+  )
 
   $UserIdentifier = $UserIdentifier.Split("\")[-1]
 
@@ -135,6 +177,10 @@ function Get-User {
 
   $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
   $objSearcher.SearchRoot = $objDomain
+
+foreach ($proporty in $proporties) {
+  $objSearcher.PropertiesToLoad.Add($proporty) | Out-Null
+}
 
   $FilterStr = "(&(objectClass=user)(|(userPrincipalName={0})(sAMAccountName={0})(uid={0})(mail={0})(distinguishedName={0})(proxyAddresses=SMTP:{0})))"
   $FilterStr = [string]::Format($FilterStr, $UserIdentifier)
@@ -146,7 +192,7 @@ function Get-User {
     }
   
   $user = $user.Properties
-  $lockedOut = $null
+  $lockedOut = $false
   $passwordLastSet = [datetime]::FromFileTime([string]($user.pwdlastset))
   $lastLogonTimestamp = [datetime]::FromFileTime([string]($user.lastlogontimestamp))
   $disabled =  (([int64][string]$user.useraccountcontrol -band 2) -ne 0)
@@ -165,14 +211,15 @@ function Get-User {
   function toString ($value) {
 
     if ($value -eq $null) { return $null }
+    if ($value -is [System.DirectoryServices.ResultPropertyValueCollection]) { $value =$value[0] } 
     return [string]$value
   }
 
   function toInt ($value) {
   if ($value -eq $null) { return $null }
-   $ value = ToString $value
+    $value = toString $value
     try {
-      [int64]$value
+     $value = [int64]$value
     }
     catch {}
     return $value
@@ -185,8 +232,8 @@ function Get-User {
   }
 
   $userHash = [ordered]@{
-    'UserPrincipalName' = $user.userprincipalname[0]; 
-    'SAMAccountName' = $user.samaccountname[0];
+    'UserPrincipalName' = toString $user.userprincipalname; 
+    'SAMAccountName' = toString $user.samaccountname;
     'Name' = toString $user.name;
     'Title' = toString $user.title;
     'JobTrack' = toString $user.jobtrack;
@@ -197,13 +244,14 @@ function Get-User {
     'Company' = toString $user.company;
     'EmployeeNumber' = toInt $user.employeenumber;
     'EmployeeClass' = ToString $user.employeeclass;
-    'EmployeeType' = toString $user.employeeType;
+    'EmployeeType' = toString $user.employeetype;
     'DistinguishedName' = toString $user.distinguishedname;
     'Manager' = toString $user.manager;
     'CostCenter' = toInt $user.costcenter;
     'Room' = toString $user.roomnumber;
     'SiteCode' = toString $user.sitecode;
     'SiteName' = toString $user.sitename;
+    'PhysicalDeliveryOfficeName' = toString $user.physicaldeliveryofficename
     'StreetAddress' = toString $user.streetaddress;
     'City' = toString $user.l;
     'State' = toString $user.st;
@@ -211,10 +259,12 @@ function Get-User {
     'Country' = toString $user.co
     'Email' = toString $user.mail
     'Phone' = toString $user.telephonenumber;
-    'MemberOf' = toString $user.memberof;
-    'ProxyAddresses' = toString $user.proxyaddresses;
+    'MemberOf' =  [Array]$user.memberof;
+    'ProxyAddresses' = [Array]$user.proxyaddresses;
+    'HomeDirectory' = toString $user.homedirectory;
     'WhenCreated' = toDatetime $user.whencreated;
     'HireDate' = toDatetime $user.hiredate;
+    "ReHireDate" = toDatetime $user.rehiredate;
     'PasswordNeverExpires' = $passwordNeverExpires;
     'PasswordExpired' = $passwordExpired;
     'PasswordSet' = $passwordLastSet;
@@ -235,7 +285,7 @@ $UserIdentifiers = $UserIdentifiers | sort -Unique
 
 if ($UserIdentifiers.Count -eq 1) {
 
-  $user = Get-User $UserIdentifiers[0]
+  $user = Get-User $UserIdentifiers
   return $user
 
 }
