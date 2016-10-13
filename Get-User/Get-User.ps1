@@ -293,7 +293,7 @@ else {
   $users = @()
   foreach ($UserIdentifier in $UserIdentifiers) {
     try {
-      $user = Get-User $UserIdentifier[0]
+      $user = Get-User $UserIdentifier
       $users += $user
     }
     catch {
