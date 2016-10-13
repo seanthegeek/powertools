@@ -13,12 +13,15 @@ UserPrincipalName
 SAMAccountName
 Name
 Title
+JobTrack
+Department
 JobFamilyDescription
 BusinessUnitDescription
 BusinessSegmentDescription
 Company
 EmployeeNumber
-JobTrack
+EmployeeClass
+EmployeeType
 DistinguishedName
 Manager
 CostCenter
@@ -33,6 +36,7 @@ Country
 Email
 Phone
 MemberOf
+ProxyAddresses
 WhenCreated
 HireDate
 PasswordNeverExpires
@@ -69,34 +73,39 @@ support, information security teams, and pentesters.
 
 .PARAMETER UserIdentifiers
 
-One or more UPNs, SAM account names, or email addresses, separated by commas,
+One or more UPNs, SAMaccountnames, or email addresses, separated by commas,
 or a path to a text file containing one identifier per line. Domain prefixes
 and suffixes are ignored.
 
-.PARAMETER recentLogonThreshold
-
-The threshold number of days considered "recent". 30 by default. Cannot be lower
-than 14.
-
 .EXAMPLE
+
+Print details for one user
 
 PS C:\> get-user alice.smith
 
 .EXAMPLE
 
+Print details for multiple users
+
 PS C:\> get-user alice.smith,bob.jackson
 
 .EXAMPLE
 
-PS C:\> get-user users.txt 14
+Print details of users that are listed in a file
+
+PS C:\> get-user users.txt 
 
 .EXAMPLE
 
-PS C:\> get-user users.txt 14 | Export-CSV -NoTypeInformation "users.csv"
+Export the results to a CSV
+
+PS C:\> get-user users.txt | Export-CSV -NoTypeInformation "users.csv"
 
 .EXAMPLE
 
-PS C:\> get-user users.txt 14 | Out-GridView
+Show the results in a GUI
+
+PS C:\> get-user users.txt | Out-GridView
 
 .LINK
 
@@ -107,9 +116,7 @@ https://github.com/seanthegeek/powertools
 
 [CmdletBinding()] param(
   [Parameter(,Position = 0,Mandatory = $true)]
-  [string[]]$UserIdentifiers,
-  [Parameter(Position = 1)]
-  [int]$recentLogonThreshold = 30
+  [string[]]$UserIdentifiers
 )
 
 $ErrorActionPreference = "Stop"
@@ -117,9 +124,7 @@ $ErrorActionPreference = "Stop"
 function Get-User {
   [CmdletBinding()] param(
     [Parameter(,Position = 0,Mandatory = $true)]
-    [string]$UserIdentifier,
-    [Parameter(Position = 1)]
-    [int]$recentLogonThreshold = 30
+    [string]$UserIdentifier
   )
 
   $ErrorActionPreference = "Stop"
@@ -133,41 +138,31 @@ function Get-User {
   $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
   $objSearcher.SearchRoot = $objDomain
 
-  if ($UserIdentifier.Contains("@")) {
-    $strFilter = [string]::Format("(&(objectCategory=User)(userprincipalname={0}))", $UserIdentifier)
-    $objSearcher.Filter = $strFilter
-    $user = $objSearcher.FindOne()
-    if ($user -eq $null) {
-      $strFilter = [string]::Format("(&(objectCategory=User)(mail={0}))", $UserIdentifier)
-      $objSearcher.Filter = $strFilter
-      $user = $objSearcher.FindOne()
-    }
-  }
-   else {
-     $strFilter = [string]::Format("(&(objectCategory=User)(samaccountname={0}))", $UserIdentifier)
-     $objSearcher.Filter = $strFilter
-     $user = $objSearcher.FindOne()
-   }
+  $FilterStr = "(&(objectClass=user)(|(userPrincipalName={0})(sAMAccountName={0})(uid={0})(mail={0})(distinguishedName={0})(proxyAddresses=SMTP:{0})))"
+  $FilterStr = [string]::Format($FilterStr, $UserIdentifier)
+  $objSearcher.Filter = $FilterStr
+  $user = $objSearcher.FindOne()
 
    if ($user -eq $null) {
      throw [string]::Format("{0} was not found", $UserIdentifier)
     }
   
   $user = $user.Properties
-  $disabled = $false
-  $lockedOut = $false
-  $passwordNeverExpires = $false
-  $passwordExpired = $false
-  $smartcardRequired = $false
-  $loggedOnRecently = $true
+  $lockedOut = $null
   $passwordLastSet = [datetime]::FromFileTime([string]($user.pwdlastset))
   $lastLogonTimestamp = [datetime]::FromFileTime([string]($user.lastlogontimestamp))
-  if ($lastLogonTimestamp -lt ((Get-Date).AddDays($recentLogonThreshold * -1))) { $loggedOnRecently = $False }
-  if (([int64][string]$user.useraccountcontrol -band 2) -ne 0) { $disabled = $true }
-  if (([int64][string]$user.useraccountcontrol -band 65536) -ne 0) { $passwordNeverExpires = $true }
-  if (([int64][string]$user.useraccountcontrol -band 8388608) -ne 0) { $passwordExpired = $true }
-  if (([int64][string]$user.useraccountcontrol -band 262144) -ne 0) { $smartcardRequired = $true }
-  if ($user.lockouttime -gt 0) { $lockedOut = [datetime]::FromFileTime([string]$user.lockouttime) }
+  $disabled =  (([int64][string]$user.useraccountcontrol -band 2) -ne 0)
+  $passwordNeverExpires = (([int64][string]$user.useraccountcontrol -band 65536) -ne 0)
+  $passwordExpired = (([int64][string]$user.useraccountcontrol -band 8388608) -ne 0)
+  $smartcardRequired = (([int64][string]$user.useraccountcontrol -band 262144) -ne 0)
+  if ($user.lockouttime -gt 0) {
+      $lockedOut = [datetime]::FromFileTime([string]$user.lockouttime) 
+  }
+  
+
+  if (((Get-Date) - $lastLogonTimestamp) -le (New-TimeSpan -Days 14)) { 
+      $lastLogonTimestamp = "<= 14 days" 
+  }
 
   function toString ($value) {
 
@@ -192,12 +187,15 @@ function Get-User {
     'SAMAccountName' = $user.samaccountname[0];
     'Name' = toString $user.name;
     'Title' = toString $user.title;
+    'JobTrack' = toString $user.jobtrack;
+    'Department' = toString $user.department;
     'JobFamilyDescription' = toString $user.jobfamilydescription;
     'BusinessUnitDescription' = toString $user.businessunitdescription;
     'BusinessSegmentDescription' = toString $user.businesssegmentdescription;
     'Company' = toString $user.company;
     'EmployeeNumber' = toInt $user.employeenumber;
-    'JobTrack' = toString $user.jobtrack;
+    'EmployeeClass' = ToString $user.employeeclass;
+    'EmployeeType' = toString $user.employeeType;
     'DistinguishedName' = toString $user.distinguishedname;
     'Manager' = toString $user.manager;
     'CostCenter' = toInt $user.costcenter;
@@ -212,12 +210,13 @@ function Get-User {
     'Email' = toString $user.mail
     'Phone' = toString $user.telephonenumber;
     'MemberOf' = toString $user.memberof;
+    'ProxyAddresses' = toString $user.proxyaddresses;
     'WhenCreated' = toDatetime $user.whencreated;
     'HireDate' = toDatetime $user.hiredate;
     'PasswordNeverExpires' = $passwordNeverExpires;
     'PasswordExpired' = $passwordExpired;
     'PasswordSet' = $passwordLastSet;
-    'LoggedOnRecently' = $loggedOnRecently;
+    'LastLoginTimestamp' = $lastLogonTimestamp;
     'SmartcardRequired' = $smartcardRequired;
     'LockedOut' = $lockedOut;
     'Disabled' = $disabled }
@@ -232,14 +231,14 @@ if ($UserIdentifiers.Count -eq 1 -and (Test-Path -PathType Leaf $UserIdentifiers
 
 if ($UserIdentifiers.Count -eq 1) {
 
-  $user = Get-User $UserIdentifiers[0] $recentLogonThreshold
+  $user = Get-User $UserIdentifiers[0]
   return $user
 
 }
 else {
   $users = @()
   foreach ($AccountName in $UserIdentifiers) {
-    $user = Get-User $AccountName $recentLogonThreshold
+    $user = Get-User $AccountName
     $users += $user
   }
   return $users
