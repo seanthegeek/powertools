@@ -13,12 +13,15 @@ user properties:
     SAMAccountName
     Name
     Title
+    JobTrack
+    Department
     JobFamilyDescription
     BusinessUnitDescription
     BusinessSegmentDescription
     Company
     EmployeeNumber
-    JobTrack
+    EmployeeClass
+    EmployeeType
     DistinguishedName
     Manager
     CostCenter
@@ -33,12 +36,13 @@ user properties:
     Email
     Phone
     MemberOf
+    ProxyAddresses
     WhenCreated
     HireDate
     PasswordNeverExpires
     PasswordExpired
     PasswordSet
-    LoggedOnRecently
+    LastLoginTimestamp
     SmartcardRequired
     LockedOut
     Disabled
@@ -53,11 +57,6 @@ containing one username per line.
 
 Domain prefixes and suffixes are ignored.
 
-**recentLogonThreshold** (Integer, Optional)
-
-The threshold number of days considered "recent".
-
-30 by default. Cannot be lower than 14.
 
 Examples
 --------
@@ -70,15 +69,14 @@ Get the properties of multiple users:
 
     PS C:\> get-user alice.smith,bob.jackson
 
-Get the properties of usernames listed in the given file, and consider
-logins recent if they are 14 days old or less:
+Get the properties of usernames listed in the given file
 
-    PS C:\> get-user users.txt 14
+    PS C:\> get-user users.txt
 
 Output the results to a CSV file:
 
-    PS C:\> get-user users.txt 14 | Export-CSV -NoTypeInformation "users.csv"
+    PS C:\> get-user users.txt | Export-CSV -NoTypeInformation "users.csv"
 
 Output the results to a searchable and sortable GUI:
 
-    PS C:\> get-user users.txt 14 | Out-GridView
+    PS C:\> get-user users.txt | Out-GridView

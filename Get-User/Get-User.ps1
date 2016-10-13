@@ -42,13 +42,13 @@ HireDate
 PasswordNeverExpires
 PasswordExpired
 PasswordSet
-LoggedOnRecently
+LastLoginTimestamp
 SmartcardRequired
 LockedOut
 Disabled
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.1.0
+Version: 1.2.0
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -109,7 +109,7 @@ PS C:\> get-user users.txt | Out-GridView
 
 .LINK
 
-https://github.com/seanthegeek/powertools
+https://github.com/seanthegeek/powertools/tree/master/Get-User
 #>
 
 #Requires -Version 3
