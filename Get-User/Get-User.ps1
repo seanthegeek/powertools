@@ -75,7 +75,7 @@ support, information security teams, and pentesters.
 
 One or more UPNs, SAMaccountnames, or email addresses, separated by commas,
 or a path to a text file containing one identifier per line. Domain prefixes
-and suffixes are ignored.
+are ignored.
 
 .EXAMPLE
 

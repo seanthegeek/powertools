@@ -50,12 +50,11 @@ user properties:
 Parameters
 ----------
 
- **SAMAccountNames** (String, Required)
+ **UserIdentifiers** (String, Required)
 
-One or more account usernames, separated by commas, or a path to a text file
-containing one username per line.
-
-Domain prefixes and suffixes are ignored.
+One or more UPNs, SAMaccountnames, or email addresses, separated by commas,
+or a path to a text file containing one identifier per line. Domain prefixes
+are ignored.
 
 
 Examples
