@@ -285,7 +285,7 @@ $UserIdentifiers = $UserIdentifiers | sort -Unique
 
 if ($UserIdentifiers.Count -eq 1) {
 
-  $user = Get-User $UserIdentifiers
+  $user = Get-User $UserIdentifiers[0]
   return $user
 
 }
@@ -293,7 +293,7 @@ else {
   $users = @()
   foreach ($UserIdentifier in $UserIdentifiers) {
     try {
-      $user = Get-User $UserIdentifier
+      $user = Get-User $UserIdentifier[0]
       $users += $user
     }
     catch {
