@@ -227,6 +227,8 @@ if ($UserIdentifiers.Count -eq 1 -and (Test-Path -PathType Leaf $UserIdentifiers
   $UserIdentifiers = Get-Content $UserIdentifiers[0] | Where-Object { $_ }
 }
 
+$UserIdentifiers = $UserIdentifiers | sort -Unique
+
 if ($UserIdentifiers.Count -eq 1) {
 
   $user = Get-User $UserIdentifiers[0]
