@@ -169,9 +169,13 @@ function Get-User {
   }
 
   function toInt ($value) {
-
-    if ($value -eq $null) { return $null }
-    return [int64][string]$value
+  if ($value -eq $null) { return $null }
+   $ value = ToString $value
+    try {
+      [int64]$value
+    }
+    catch {}
+    return $value
   }
 
   function toDatetime ($value) {
@@ -243,7 +247,7 @@ else {
       $users += $user
     }
     catch {
-      Write-Warning  throw [string]::Format("{0} was not found", $UserIdentifier)
+      Write-Warning $_.Exception.Message
     }
   }
   return $users
