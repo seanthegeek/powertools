@@ -129,8 +129,6 @@ function Get-User {
 
   $ErrorActionPreference = "Stop"
 
-  if ($recentLogonThreshold -lt 14) { throw "lastlogontimestamp is not accurate to less than 14 days" }
-
   $UserIdentifier = $UserIdentifier.Split("\")[-1]
 
   $objDomain = New-Object System.DirectoryServices.DirectoryEntry
@@ -237,9 +235,14 @@ if ($UserIdentifiers.Count -eq 1) {
 }
 else {
   $users = @()
-  foreach ($AccountName in $UserIdentifiers) {
-    $user = Get-User $AccountName
-    $users += $user
+  foreach ($UserIdentifier in $UserIdentifiers) {
+    try {
+      $user = Get-User $UserIdentifier
+      $users += $user
+    }
+    catch {
+      Write-Warning  throw [string]::Format("{0} was not found", $UserIdentifier)
+    }
   }
   return $users
 }
