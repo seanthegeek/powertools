@@ -130,7 +130,22 @@ function Get-User {
   )
 
   $ErrorActionPreference = "Stop"
-    $FormatEnumerationLimit = -1
+  $FormatEnumerationLimit = -1
+
+  $vaildMailboxValues = @(
+  1,           # User Mailbox
+  2,           # Linked Mailbox
+  4,           # Shared Mailbox
+  8,           # Legacy Mailbox
+  16,          # Room Mailbox
+  32,          # Equipment Mailbox
+  8192,        # System Attendant Mailbox 
+  16384,       # Mailbox Database Mailbox 
+  2147483648,  # Remote User Mailbox
+  8589934592,  # Remote Room Mailbox
+  17173869184, # Remote Equipment Mailbox 
+  34359738368  # Remote Shared Mailbox
+  )
 
   $proporties = @(
     "userPrincipalName",
@@ -193,25 +208,7 @@ foreach ($proporty in $proporties) {
      throw [string]::Format("{0} was not found", $UserIdentifier)
     }
   
-  $user = $user.Properties
-  $lockedOut = $false
-  $passwordLastSet = [datetime]::FromFileTime([string]($user.pwdlastset))
-  $lastLogonTimestamp = [datetime]::FromFileTime([string]($user.lastlogontimestamp))
-  $disabled =  (([int64][string]$user.useraccountcontrol -band 2) -ne 0)
-  $passwordNeverExpires = (([int64][string]$user.useraccountcontrol -band 65536) -ne 0)
-  $passwordExpired = (([int64][string]$user.useraccountcontrol -band 8388608) -ne 0)
-  $smartcardRequired = (([int64][string]$user.useraccountcontrol -band 262144) -ne 0)
-  $validMailbox = (($user.msexchrecipienttypedetails -eq 1) -or ($user.msexchrecipienttypedetails -eq 2147483648))
-  if ($user.lockouttime -gt 0) {
-      $lockedOut = [datetime]::FromFileTime([string]$user.lockouttime) 
-  }
-  
-
-  if (((Get-Date) - $lastLogonTimestamp) -le (New-TimeSpan -Days 14)) { 
-      $lastLogonTimestamp = "<= 14 days" 
-  }
-
-  function toString ($value) {
+    function toString ($value) {
 
     if ($value -eq $null) { return $null }
     if ($value -is [System.DirectoryServices.ResultPropertyValueCollection]) { $value =$value[0] } 
@@ -232,6 +229,25 @@ foreach ($proporty in $proporties) {
 
     if ($value -eq $null) { return $null }
     return [datetime][string]$value
+  }
+
+
+  $user = $user.Properties
+  $lockedOut = $false
+  $passwordLastSet = [datetime]::FromFileTime([string]($user.pwdlastset))
+  $lastLogonTimestamp = [datetime]::FromFileTime([string]($user.lastlogontimestamp))
+  $disabled =  (([int64][string]$user.useraccountcontrol -band 2) -ne 0)
+  $passwordNeverExpires = (([int64][string]$user.useraccountcontrol -band 65536) -ne 0)
+  $passwordExpired = (([int64][string]$user.useraccountcontrol -band 8388608) -ne 0)
+  $smartcardRequired = (([int64][string]$user.useraccountcontrol -band 262144) -ne 0)
+  $validMailbox = ((toInt $user.msexchrecipienttypedetails) -in $vaildMailboxValues)
+  if ($user.lockouttime -gt 0) {
+      $lockedOut = [datetime]::FromFileTime([string]$user.lockouttime) 
+  }
+  
+
+  if (((Get-Date) - $lastLogonTimestamp) -le (New-TimeSpan -Days 14)) { 
+      $lastLogonTimestamp = "<= 14 days" 
   }
 
   $userHash = [ordered]@{
