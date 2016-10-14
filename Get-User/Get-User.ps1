@@ -15,9 +15,9 @@ Name
 Title
 JobTrack
 Department
-JobFamilyDescription
-BusinessUnitDescription
-BusinessSegmentDescription
+JobFamily
+BusinessUnit
+BusinessSegment
 Company
 EmployeeNumber
 EmployeeClass
@@ -44,6 +44,7 @@ PasswordExpired
 PasswordSet
 LastLoginTimestamp
 SmartcardRequired
+ValidMailbox
 LockedOut
 Disabled
 
@@ -240,9 +241,9 @@ foreach ($proporty in $proporties) {
     'Title' = toString $user.title;
     'JobTrack' = toString $user.jobtrack;
     'Department' = toString $user.department;
-    'JobFamilyDescription' = toString $user.jobfamilydescription;
-    'BusinessUnitDescription' = toString $user.businessunitdescription;
-    'BusinessSegmentDescription' = toString $user.businesssegmentdescription;
+    'JobFamily' = toString $user.jobfamilydescription;
+    'BusinessUnit' = toString $user.businessunitdescription;
+    'BusinessSegment' = toString $user.businesssegmentdescription;
     'Company' = toString $user.company;
     'EmployeeNumber' = toInt $user.employeenumber;
     'EmployeeClass' = ToString $user.employeeclass;
