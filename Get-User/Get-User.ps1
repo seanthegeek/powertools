@@ -132,7 +132,7 @@ function Get-User {
   $ErrorActionPreference = "Stop"
   $FormatEnumerationLimit = -1
 
-  $vaildMailboxValues = @(
+  $ExchangeMailboxValues = @(
   1,           # User Mailbox
   2,           # Linked Mailbox
   4,           # Shared Mailbox
@@ -141,6 +141,13 @@ function Get-User {
   32,          # Equipment Mailbox
   8192,        # System Attendant Mailbox 
   16384,       # Mailbox Database Mailbox 
+  2147483648,  # Remote User Mailbox
+  8589934592,  # Remote Room Mailbox
+  17173869184, # Remote Equipment Mailbox 
+  34359738368  # Remote Shared Mailbox
+  )
+
+  $RemoteExchangeMailboxValues = @(
   2147483648,  # Remote User Mailbox
   8589934592,  # Remote Room Mailbox
   17173869184, # Remote Equipment Mailbox 
@@ -240,7 +247,8 @@ foreach ($proporty in $proporties) {
   $passwordNeverExpires = (([int64][string]$user.useraccountcontrol -band 65536) -ne 0)
   $passwordExpired = (([int64][string]$user.useraccountcontrol -band 8388608) -ne 0)
   $smartcardRequired = (([int64][string]$user.useraccountcontrol -band 262144) -ne 0)
-  $validMailbox = ((toInt $user.msexchrecipienttypedetails) -in $vaildMailboxValues)
+  $exchangeMailbox = ((toInt $user.msexchrecipienttypedetails) -in $exchangeMailboxValues)
+  $remoteExchangeMailbox = ((toInt $user.msexchrecipienttypedetails) -in $RemoteExchangeMailboxValues)
   if ($user.lockouttime -gt 0) {
       $lockedOut = [datetime]::FromFileTime([string]$user.lockouttime) 
   }
@@ -279,7 +287,7 @@ foreach ($proporty in $proporties) {
     'Email' = toString $user.mail
     'Phone' = toString $user.telephonenumber;
     'MemberOf' =  [Array]$user.memberof;
-    'ProxyAddresses' = [Array]$user.proxyaddresses;
+    'ProxyAddresses' = [Array]$user.proxyaddresses; 
     'HomeDirectory' = toString $user.homedirectory;
     'WhenCreated' = toDatetime $user.whencreated;
     'HireDate' = toDatetime $user.hiredate;
@@ -289,7 +297,8 @@ foreach ($proporty in $proporties) {
     'PasswordSet' = $passwordLastSet;
     'LastLoginTimestamp' = $lastLogonTimestamp;
     'SmartcardRequired' = $smartcardRequired;
-    "ValidMailbox" = $validMailbox;
+    "ExchangeMailbox" = $exchangeMailbox;
+    "RemoteExchangeMailbox" = $remoteExchangeMailbox;
     'LockedOut' = $lockedOut;
     'Disabled' = $disabled }
 
