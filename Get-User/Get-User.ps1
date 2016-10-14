@@ -165,6 +165,7 @@ function Get-User {
     "memberOf"
     "proxyAddresses",
     "userAccountControl",
+    "msExchRecipientTypeDetails",
     "lastLogonTimestamp",
     "pwdLastSet",
     "lockoutTime",
@@ -199,6 +200,7 @@ foreach ($proporty in $proporties) {
   $passwordNeverExpires = (([int64][string]$user.useraccountcontrol -band 65536) -ne 0)
   $passwordExpired = (([int64][string]$user.useraccountcontrol -band 8388608) -ne 0)
   $smartcardRequired = (([int64][string]$user.useraccountcontrol -band 262144) -ne 0)
+  $validMailbox = (($user.msexchrecipienttypedetails -eq 1) -or ($user.msexchrecipienttypedetails -eq 2147483648))
   if ($user.lockouttime -gt 0) {
       $lockedOut = [datetime]::FromFileTime([string]$user.lockouttime) 
   }
@@ -238,9 +240,9 @@ foreach ($proporty in $proporties) {
     'Title' = toString $user.title;
     'JobTrack' = toString $user.jobtrack;
     'Department' = toString $user.department;
-    'JobFamily' = toString $user.jobfamilydescription;
-    'BusinessUnit' = toString $user.businessunitdescription;
-    'BusinessSegment' = toString $user.businesssegmentdescription;
+    'JobFamilyDescription' = toString $user.jobfamilydescription;
+    'BusinessUnitDescription' = toString $user.businessunitdescription;
+    'BusinessSegmentDescription' = toString $user.businesssegmentdescription;
     'Company' = toString $user.company;
     'EmployeeNumber' = toInt $user.employeenumber;
     'EmployeeClass' = ToString $user.employeeclass;
@@ -270,6 +272,7 @@ foreach ($proporty in $proporties) {
     'PasswordSet' = $passwordLastSet;
     'LastLoginTimestamp' = $lastLogonTimestamp;
     'SmartcardRequired' = $smartcardRequired;
+    "ValidMailbox" = $validMailbox;
     'LockedOut' = $lockedOut;
     'Disabled' = $disabled }
 
