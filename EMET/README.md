@@ -146,6 +146,8 @@ EMET GUI.
 
 #### medium
 
+This is the default deployment configuration, and it satisfies [CIS Windows 10 benchmark recommendation](https://benchmarks.cisecurity.org/tools2/windows/CIS_Microsoft_Windows_10_Enterprise_Release_1511_Benchmark_v1.1.0.pdf) 18.9.22.
+
     DEP=ApplicationOptOut
     SEHOP=ApplicationOptOut
     ASLR=ApplicationOptIn
@@ -212,6 +214,8 @@ that are frequent exploit targets, including:
     - Foxit Reader
 
 ### Pinned sites
+This list comes with EMET, but it is not imported by the deployment scripts to avoid breaking enterprise SSL decryption.
+
 - login.microsoftonline.com
 - secure.skype.com
 - www.facebook.com
