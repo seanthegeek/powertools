@@ -116,7 +116,7 @@ https://github.com/seanthegeek/powertools/tree/master/Get-User
 #Requires -Version 3
 
 [CmdletBinding()] param(
-  [Parameter(,Position = 0,Mandatory = $true)]
+  [Parameter(Position = 0, Mandatory = $true)]
   [string[]]$UserIdentifiers
 )
 
@@ -125,7 +125,7 @@ $FormatEnumerationLimit = -1
 
 function Get-User {
   [CmdletBinding()] param(
-    [Parameter(,Position = 0,Mandatory = $true)]
+    [Parameter(Position = 0, Mandatory = $true)]
     [string]$UserIdentifier
   )
 
