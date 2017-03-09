@@ -3,7 +3,7 @@
 Parses and returns entries from a local or remote Windows hosts file.
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.0.0
+Version: 1.0.1
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -22,16 +22,15 @@ limitations under the License.
     
 .DESCRIPTION
 Parses and returns entries from a local or remote Windows hosts file.
+
  
 .PARAMETER ComputerNames
 Optionally supply one or more computer names, or a path to a text file containing one name
-per line. \\ prefixes are ignored.
+per line. \\ prefixes are ignored. Local admin rights are required to access a domain
+computer remotely.
 
 .PARAMETER CSV
 Optionally export the results to the given path as a CSV file, rather than printing
-
-.NOTES
-Local admin rights are required to access a domain computer remotely.
 
 .EXAMPLE
 # Return hosts file entries from the local machine
@@ -76,12 +75,10 @@ Parses and returns entries from a local or remote Windows hosts file.
  
 .PARAMETER ComputerName
 Optionally supply a remote computer name to access. The \\ prefix is ignored.
+Local admin rights are required to access a domain computer remotely.
 
 .PARAMETER CSV
 Optionally export the results to the given path as a CSV file, rather than printing
-
-.NOTES
-Local admin rights are required to access a domain computer remotely.
 
 .EXAMPLE
 # Return hosts file entries from the local machine
@@ -108,7 +105,7 @@ function Get-Hosts {
     $hosts_content = Get-Content Root:\Windows\System32\drivers\etc\hosts | Where-Object { $_ } 
   }
   Catch [System.IO.IOException] {
-    Write-Warning "$root could not be found. Is the host down?"
+    Write-Warning "$root could not be found. Is the host down/off-network?"
   }
 
   Catch [System.UnauthorizedAccessException] {
@@ -122,16 +119,17 @@ function Get-Hosts {
       $match = ([regex]::Match($line, $pattern).Groups)
       if ($match.Groups[0].Success -eq $true) {
       $proporties = [ordered]@{
-      "Address" = $match.Groups[0].Groups[1].Value;
-      "Hostname" = $match.Groups[0].Groups[2].Value
-        }
-        $entry = New-Object -TypeName PSObject -Property $proporties
+        "Address" = $match.Groups[0].Groups[1].Value;
+        "Hostname" = $match.Groups[0].Groups[2].Value
+    }
+      $entry = New-Object -TypeName PSObject -Property $proporties
       $hosts += $entry 
       }
     }
-
     $hosts
 }
+
+results = ""
 
 if ($ComputerNames.Count -eq 0) {
   $results =  Get-Hosts

@@ -4,7 +4,7 @@ Get-Hosts
 Parses and returns entries from a local or remote Windows hosts file.
 
     Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-    Version: 1.0.0
+    Version: 1.0.
     Required Dependencies: None
     Optional Dependencies: None
 
@@ -32,7 +32,10 @@ Parameters
 ----------
 
     -ComputerNames <String[]>
-        Optionally supply one or more computer names, or a path to a text file containing one per line. \\ prefixes are ignored.
+        Optionally supply one or more computer names, or a path to a text file containing one name per line. \\ prefixes are ignored.
+        
+        Local admin rights are required to access a domain computer remotely.
+
 
     -CSV <String>
         Optionally export the results to the given path as a CSV file, rather than printing
