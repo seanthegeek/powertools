@@ -108,7 +108,7 @@ function Get-Hosts {
     $hosts_content = Get-Content Root:\Windows\System32\drivers\etc\hosts | Where-Object { $_ } 
   }
   Catch [System.IO.IOException] {
-    Write-Warning "$root could not be found."
+    Write-Warning "$root could not be found. Is the host down?"
   }
 
   Catch [System.UnauthorizedAccessException] {
