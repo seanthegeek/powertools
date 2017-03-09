@@ -4,7 +4,7 @@ Get-Hosts
 Parses and returns entries from a local or remote Windows hosts file.
 
     Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-    Version: 1.0.
+    Version: 1.0.1
     Required Dependencies: None
     Optional Dependencies: None
 
@@ -25,7 +25,7 @@ Parses and returns entries from a local or remote Windows hosts file.
 Syntax
 ------
 
-    C:\bin\Get-Hosts.ps1 [[-ComputerNames] <String[]>] [-CSV <String>] [<CommonParameters>]
+    Get-Hosts.ps1 [[-ComputerNames] <String[]>] [-CSV <String>] [<CommonParameters>]
 
 
 Parameters
