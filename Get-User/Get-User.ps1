@@ -9,6 +9,7 @@ Rather than using a combination of the GAL, Active Directory Users and
 Computers, and/or SharePoint, staff can use this script to obtain the following
 user properties:
 
+uid
 UserPrincipalName
 SAMAccountName
 Name
@@ -49,7 +50,7 @@ LockedOut
 Disabled
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.2.0
+Version: 1.2.1
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -83,6 +84,20 @@ are ignored.
 Print details for one user
 
 PS C:\> get-user alice.smith
+
+.EXAMPLE
+
+Get the full list of group memberships
+
+PS C:\> $alice = get-user alice.smith
+PS C:\> $alice.MemberOf
+
+.EXAMPLE
+
+Get the full list of proxy addresses
+
+PS C:\> $alice = get-user alice.smith
+PS C:\> $alice.ProxyAddresses
 
 .EXAMPLE
 
@@ -124,7 +139,8 @@ $ErrorActionPreference = "Stop"
 $FormatEnumerationLimit = -1
 
 function Get-User {
-  [CmdletBinding()] param(
+  
+  param(
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$UserIdentifier
   )
@@ -155,6 +171,7 @@ function Get-User {
   )
 
   $proporties = @(
+    "uid",
     "userPrincipalName",
     "sAMAccountName",
     "name",
@@ -258,7 +275,12 @@ foreach ($proporty in $proporties) {
       $lastLogonTimestamp = "<= 14 days" 
   }
 
+  # CAH specific
+  $LitHoldFlag = "*IPT*"
+  $LitHold = ($user.description -eq $LitHoldFlag) -or ($user.comment -eq $LitHoldFlag) 
+
   $userHash = [ordered]@{
+    'uid' = toString $user.uid;
     'UserPrincipalName' = toString $user.userprincipalname; 
     'SAMAccountName' = toString $user.samaccountname;
     'Name' = toString $user.name;
@@ -272,8 +294,10 @@ foreach ($proporty in $proporties) {
     'EmployeeNumber' = toInt $user.employeenumber;
     'EmployeeClass' = ToString $user.employeeclass;
     'EmployeeType' = toString $user.employeetype;
+    "Description" = toString $user.description;
+    "Commment" = toString $user.comment;
     'DistinguishedName' = toString $user.distinguishedname;
-    'Manager' = toString $user.manager;
+    'ManagerDN' = toString $user.manager;
     'CostCenter' = toInt $user.costcenter;
     'Room' = toString $user.roomnumber;
     'SiteCode' = toString $user.sitecode;
@@ -292,6 +316,7 @@ foreach ($proporty in $proporties) {
     'WhenCreated' = toDatetime $user.whencreated;
     'HireDate' = toDatetime $user.hiredate;
     "ReHireDate" = toDatetime $user.rehiredate;
+    'litHold' = $litHold;
     'PasswordNeverExpires' = $passwordNeverExpires;
     'PasswordExpired' = $passwordExpired;
     'PasswordSet' = $passwordLastSet;
