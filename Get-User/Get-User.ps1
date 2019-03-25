@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Returns Active Directory details for the given user account(s). Useful for IT
 support, information security teams, and pentesters. Only properties that are
@@ -50,7 +50,7 @@ LockedOut
 Disabled
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.2.1
+Version: 1.2.2
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -223,7 +223,7 @@ foreach ($proporty in $proporties) {
   $objSearcher.PropertiesToLoad.Add($proporty) | Out-Null
 }
 
-  $FilterStr = "(&(objectClass=user)(|(userPrincipalName={0})(sAMAccountName={0})(uid={0})(mail={0})(distinguishedName={0})(proxyAddresses=SMTP:{0})))"
+  $FilterStr = "(&(objectClass=user)(|(userPrincipalName={0})(sAMAccountName={0})(uid={0})(mail={0})(distinguishedName={0})(cn={0})(proxyAddresses=SMTP:{0})))"
   $FilterStr = [string]::Format($FilterStr, $UserIdentifier)
   $objSearcher.Filter = $FilterStr
   $user = $objSearcher.FindOne()
