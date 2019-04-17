@@ -23,12 +23,15 @@ Company
 EmployeeNumber
 EmployeeClass
 EmployeeType
+Description
+Commment
 DistinguishedName
-Manager
+ManagerDN
 CostCenter
 Room
 SiteCode
 SiteName
+PhysicalDeliveryOfficeName
 StreetAddress
 City
 State
@@ -38,19 +41,22 @@ Email
 Phone
 MemberOf
 ProxyAddresses
+HomeDirectory
 WhenCreated
 HireDate
+ReHireDate
 PasswordNeverExpires
 PasswordExpired
 PasswordSet
 LastLoginTimestamp
 SmartcardRequired
-ValidMailbox
+ExchangeMailbox
+RemoteExchangeMailbox
 LockedOut
 Disabled
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.2.2
+Version: 1.2.3
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -260,7 +266,7 @@ foreach ($proporty in $proporties) {
   $lockedOut = $false
   $passwordLastSet = [datetime]::FromFileTime([string]($user.pwdlastset))
   $lastLogonTimestamp = [datetime]::FromFileTime([string]($user.lastlogontimestamp))
-  $disabled =  (([int64][string]$user.useraccountcontrol -band 2) -ne 0)
+  $disabled = (([int64][string]$user.useraccountcontrol -band 2) -ne 0)
   $passwordNeverExpires = (([int64][string]$user.useraccountcontrol -band 65536) -ne 0)
   $passwordExpired = (([int64][string]$user.useraccountcontrol -band 8388608) -ne 0)
   $smartcardRequired = (([int64][string]$user.useraccountcontrol -band 262144) -ne 0)
@@ -274,10 +280,6 @@ foreach ($proporty in $proporties) {
   if (((Get-Date) - $lastLogonTimestamp) -le (New-TimeSpan -Days 14)) { 
       $lastLogonTimestamp = "<= 14 days" 
   }
-
-  # CAH specific
-  $LitHoldFlag = "*IPT*"
-  $LitHold = ($user.description -eq $LitHoldFlag) -or ($user.comment -eq $LitHoldFlag) 
 
   $userHash = [ordered]@{
     'uid' = toString $user.uid;
@@ -316,7 +318,6 @@ foreach ($proporty in $proporties) {
     'WhenCreated' = toDatetime $user.whencreated;
     'HireDate' = toDatetime $user.hiredate;
     "ReHireDate" = toDatetime $user.rehiredate;
-    'litHold' = $litHold;
     'PasswordNeverExpires' = $passwordNeverExpires;
     'PasswordExpired' = $passwordExpired;
     'PasswordSet' = $passwordLastSet;
