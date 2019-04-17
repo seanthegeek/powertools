@@ -1,14 +1,10 @@
 Get-User.ps1
 ============
 
-Returns Active Directory details for the given user account(s). Useful for IT
-support, information security teams, and pentesters. Only properties that are
-reliably replicated are included. The returned object can be used with
-Export-CSV and other useful outputs.
+Returns Active Directory details for the given user account(s). Useful for IT support, information security teams, and pentesters. Only properties that are reliably replicated are included. The returned object can be used with Export-CSV and other useful outputs.
 
 Rather than using a combination of the GAL, Active Directory Users and
-Computers, and/or SharePoint, staff can use this script to obtain the following
-user properties:
+Computers, and/or SharePoint, staff can use this script to obtain the following user properties:
 
     uid
     UserPrincipalName
