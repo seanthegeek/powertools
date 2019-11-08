@@ -24,7 +24,7 @@ EmployeeNumber
 EmployeeClass
 EmployeeType
 Description
-Commment
+Comment
 DistinguishedName
 ManagerDN
 CostCenter
@@ -299,7 +299,7 @@ foreach ($proporty in $proporties) {
     'EmployeeClass' = ToString $user.employeeclass;
     'EmployeeType' = toString $user.employeetype;
     "Description" = toString $user.description;
-    "Commment" = toString $user.comment;
+    "Comment" = toString $user.comment;
     'DistinguishedName' = toString $user.distinguishedname;
     'ManagerDN' = toString $user.manager;
     'CostCenter' = toInt $user.costcenter;
