@@ -56,7 +56,7 @@ LockedOut
 Disabled
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.2.3
+Version: 1.2.4
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -191,6 +191,8 @@ function Get-User {
     "employeeNumber",
     "employeeClass",
     "employeeType",
+    "Description",
+    "Comment",
     "distinguishedName",
     "manager"
     "costCenter",
@@ -328,7 +330,7 @@ foreach ($proporty in $proporties) {
     'LockedOut' = $lockedOut;
     'Disabled' = $disabled }
 
-  return New-Object -TypeName PSObject -Property $userHash
+  return New-Object –Type PSObject –Prop $userHash
 
 }
 
