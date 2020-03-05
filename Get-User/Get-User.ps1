@@ -330,7 +330,7 @@ foreach ($proporty in $proporties) {
     'LockedOut' = $lockedOut;
     'Disabled' = $disabled }
 
-  return New-Object –Type PSObject –Prop $userHash
+  return New-Object -Type PSObject -Prop $userHash
 
 }
 
