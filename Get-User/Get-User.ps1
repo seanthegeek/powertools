@@ -56,7 +56,7 @@ LockedOut
 Disabled
 
 Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.2.4
+Version: 1.2.5
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -338,7 +338,7 @@ if ($UserIdentifiers.Count -eq 1 -and (Test-Path -PathType Leaf $UserIdentifiers
   $UserIdentifiers = Get-Content $UserIdentifiers[0] | Where-Object { $_ }
 }
 
-$UserIdentifiers = $UserIdentifiers | sort -Unique
+$UserIdentifiers = $UserIdentifiers | Sort-Object -Unique
 
 if ($UserIdentifiers.Count -eq 1) {
 
