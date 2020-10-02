@@ -55,12 +55,12 @@ RemoteExchangeMailbox
 LockedOut
 Disabled
 
-Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.2.5
+Author: Sean Whalen (@SeanTheGeek)
+Version: 1.3.0
 Required Dependencies: None
 Optional Dependencies: None
 
-Copyright 2015 Sean Whalen
+Copyright 2020 Sean Whalen
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -84,6 +84,10 @@ support, information security teams, and pentesters.
 One or more UPNs, SAMaccountnames, or email addresses, separated by commas,
 or a path to a text file containing one identifier per line. Domain prefixes
 are ignored.
+
+.PARAMETER BaseDN
+
+The domain to search in
 
 .EXAMPLE
 
@@ -138,21 +142,23 @@ https://github.com/seanthegeek/powertools/tree/master/Get-User
 
 [CmdletBinding()] param(
   [Parameter(Position = 0, Mandatory = $true)]
-  [string[]]$UserIdentifiers
+  [string[]]$UserIdentifiers,
+  [Parameter(Position = 1, Mandatory = $false)]
+  [string]$BaseDN
 )
 
 $ErrorActionPreference = "Stop"
-$FormatEnumerationLimit = -1
 
 function Get-User {
   
   param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [string]$UserIdentifier
-  )
+    [string]$UserIdentifier,
+    [Parameter(Position = 1, Mandatory = $false)]
+    [string]$BaseDN
+)
 
   $ErrorActionPreference = "Stop"
-  $FormatEnumerationLimit = -1
 
   $ExchangeMailboxValues = @(
   1,           # User Mailbox
@@ -222,7 +228,16 @@ function Get-User {
 
   $UserIdentifier = $UserIdentifier.Split("\")[-1]
 
-  $objDomain = New-Object System.DirectoryServices.DirectoryEntry
+  if ($null -eq $BaseDN) {
+    $objDomain = New-Object System.DirectoryServices.DirectoryEntry
+   }
+   else {
+     $BaseDN = $BaseDN -replace "LDAP://", ""
+     $BaseDN = "LDAP://" + $BaseDN
+     $objDomain = New-Object System.DirectoryServices.DirectoryEntry $BaseDN
+   }
+
+   Write-Output $objDomain
 
   $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
   $objSearcher.SearchRoot = $objDomain
@@ -236,19 +251,19 @@ foreach ($proporty in $proporties) {
   $objSearcher.Filter = $FilterStr
   $user = $objSearcher.FindOne()
 
-   if ($user -eq $null) {
+   if ($null -eq $user) {
      throw [string]::Format("{0} was not found", $UserIdentifier)
     }
   
     function toString ($value) {
 
-    if ($value -eq $null) { return $null }
+    if ($null -eq $value) { return $null }
     if ($value -is [System.DirectoryServices.ResultPropertyValueCollection]) { $value =$value[0] } 
     return [string]$value
   }
 
   function toInt ($value) {
-  if ($value -eq $null) { return $null }
+  if ($null -eq $value) { return $null }
     $value = toString $value
     try {
      $value = [int64]$value
@@ -259,7 +274,7 @@ foreach ($proporty in $proporties) {
 
   function toDatetime ($value) {
 
-    if ($value -eq $null) { return $null }
+    if ($null -eq $value) { return $null }
     return [datetime][string]$value
   }
 
@@ -338,11 +353,11 @@ if ($UserIdentifiers.Count -eq 1 -and (Test-Path -PathType Leaf $UserIdentifiers
   $UserIdentifiers = Get-Content $UserIdentifiers[0] | Where-Object { $_ }
 }
 
-$UserIdentifiers = $UserIdentifiers | Sort-Object -Unique
+$UserIdentifiers = $UserIdentifiers | sort -Unique
 
 if ($UserIdentifiers.Count -eq 1) {
 
-  $user = Get-User $UserIdentifiers[0]
+  $user = Get-User $UserIdentifiers[0] $BaseDN 
   return $user
 
 }
@@ -350,7 +365,7 @@ else {
   $users = @()
   foreach ($UserIdentifier in $UserIdentifiers) {
     try {
-      $user = Get-User $UserIdentifier
+      $user = Get-User $UserIdentifier $BaseDN
       $users += $user
     }
     catch {
