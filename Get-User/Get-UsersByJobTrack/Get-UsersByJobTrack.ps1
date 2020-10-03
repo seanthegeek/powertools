@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-Returns Active Directory details for active users in the given job track(s). 
+Returns Active Directory details for active users with the given job track(s). 
 Useful for IT support, information security teams, and pentesters. 
-Only properties that are reliably replicated are included.
+Only properties that are reliably replicated are included. 
 The returned object can be used with Export-CSV and other useful outputs.
 
 Rather than using a combination of the GAL, Active Directory Users and
@@ -55,12 +55,12 @@ RemoteExchangeMailbox
 LockedOut
 Disabled
 
-Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
-Version: 1.0.0
+Author: Sean Whalen (@SeanTheGeek)
+Version: 1.1.0
 Required Dependencies: Get-Users.ps1
 Optional Dependencies: None
 
-Copyright 2015 Sean Whalen
+Copyright 2020 Sean Whalen
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -84,6 +84,10 @@ support, information security teams, and pentesters.
 One or more UPNs, SAMaccountnames, or email addresses, separated by commas,
 or a path to a text file containing one identifier per line. Domain prefixes
 are ignored.
+
+.PARAMETER Base
+
+The domain/base object to search in
 
 .EXAMPLE
 
@@ -117,28 +121,29 @@ PS C:\> get-usersbyjobtrack M1 | Out-GridView
 
 .LINK
 
-https://github.com/seanthegeek/powertools/tree/master/Get-UsersByJobTrack
+https://github.com/seanthegeek/powertools/tree/master/Get-User/Get-UsersByJobTrack
 #>
 
 #Requires -Version 3
 
 [CmdletBinding()] param(
   [Parameter(Position = 0, Mandatory = $true)]
-  [string[]]$JobTracks
+  [string[]]$JobTracks,
+  [Parameter(Position = 1, Mandatory = $false)]
+  [string]$Base
 )
 
 $ErrorActionPreference = "Stop"
-$FormatEnumerationLimit = -1
 
 function Get-UsersByJobTrack {
-  
   param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [string]$JobTrack
+    [string]$JobTrack,
+    [Parameter(Position = 1, Mandatory = $false)]
+    [string]$Base
   )
 
   $ErrorActionPreference = "Stop"
-  $FormatEnumerationLimit = -1
 
 
   $proporties = @(
@@ -147,26 +152,34 @@ function Get-UsersByJobTrack {
     "sAMAccountName"
   )
 
-  $objDomain = New-Object System.DirectoryServices.DirectoryEntry
+  if ($null -eq $Base) {
+    $objDomain = New-Object System.DirectoryServices.DirectoryEntry
+    }
+    else {
+      $Base = $Base.ToLower()
+      $Base = $Base -replace "ldap://", ""
+      $Base = "LDAP://" + $Base
+      $objDomain = New-Object System.DirectoryServices.DirectoryEntry $Base
+    }
 
   $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
   $objSearcher.SearchRoot = $objDomain
 
-foreach ($proporty in $proporties) {
-  $objSearcher.PropertiesToLoad.Add($proporty) | Out-Null
-}
+  foreach ($proporty in $proporties) {
+    $objSearcher.PropertiesToLoad.Add($proporty) | Out-Null
+  }
 
   $FilterStr = "(&(objectClass=user)(jobTrack={0})(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))"
   $FilterStr = [string]::Format($FilterStr, $JobTrack)
   $objSearcher.Filter = $FilterStr
   $_users = $objSearcher.FindAll()
 
-   if ($_users -eq $null) {
+   if ($null -eq $_users) {
      throw [string]::Format("Users with job track {0} were not found", $JobTrack)
     }
     $users = @()
     foreach ($user in $_users) {
-      $_user = Get-User.ps1 $user.Properties.uid
+      $_user = Get-User.ps1 $user.Properties.uid $Base
       $users += $_user
     }
     return $users
@@ -183,4 +196,3 @@ $users = @()
     }
   }
   return $users
-  
