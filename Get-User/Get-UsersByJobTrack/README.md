@@ -55,10 +55,13 @@ Computers, and/or SharePoint, staff can use this script to obtain the following 
 Parameters
 ----------
 
- **JobTrack** (String, Required)
+ **JobTracks** (String, Required)
 
-A job track.
+One or more job tracks seperated by commas.
 
+ **Base** (String, Optional)
+
+The domain/ base object to search in.
 
 Examples
 --------
