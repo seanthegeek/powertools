@@ -85,9 +85,9 @@ One or more UPNs, SAMaccountnames, or email addresses, separated by commas,
 or a path to a text file containing one identifier per line. Domain prefixes
 are ignored.
 
-.PARAMETER BaseDN
+.PARAMETER Base
 
-The domain to search in
+The domain/base object to search in
 
 .EXAMPLE
 
@@ -144,7 +144,7 @@ https://github.com/seanthegeek/powertools/tree/master/Get-User
   [Parameter(Position = 0, Mandatory = $true)]
   [string[]]$UserIdentifiers,
   [Parameter(Position = 1, Mandatory = $false)]
-  [string]$BaseDN
+  [string]$Base
 )
 
 $ErrorActionPreference = "Stop"
@@ -155,7 +155,7 @@ function Get-User {
     [Parameter(Position = 0, Mandatory = $true)]
     [string]$UserIdentifier,
     [Parameter(Position = 1, Mandatory = $false)]
-    [string]$BaseDN
+    [string]$Base
 )
 
   $ErrorActionPreference = "Stop"
@@ -228,16 +228,15 @@ function Get-User {
 
   $UserIdentifier = $UserIdentifier.Split("\")[-1]
 
-  if ($null -eq $BaseDN) {
+  if ($null -eq $Base) {
     $objDomain = New-Object System.DirectoryServices.DirectoryEntry
    }
    else {
-     $BaseDN = $BaseDN -replace "LDAP://", ""
-     $BaseDN = "LDAP://" + $BaseDN
-     $objDomain = New-Object System.DirectoryServices.DirectoryEntry $BaseDN
+     $Base = $Base.ToLower()
+     $Base = $Base -replace "ldap://", ""
+     $Base = "LDAP://" + $Base
+     $objDomain = New-Object System.DirectoryServices.DirectoryEntry $Base
    }
-
-   Write-Output $objDomain
 
   $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
   $objSearcher.SearchRoot = $objDomain
@@ -258,7 +257,7 @@ foreach ($proporty in $proporties) {
     function toString ($value) {
 
     if ($null -eq $value) { return $null }
-    if ($value -is [System.DirectoryServices.ResultPropertyValueCollection]) { $value =$value[0] } 
+    if ($value -is [System.DirectoryServices.ResultPropertyValueCollection]) { $value = $value[0] } 
     return [string]$value
   }
 
@@ -296,7 +295,7 @@ foreach ($proporty in $proporties) {
 
   if (((Get-Date) - $lastLogonTimestamp) -le (New-TimeSpan -Days 14)) { 
       $lastLogonTimestamp = "<= 14 days" 
-  }
+  } 
 
   $userHash = [ordered]@{
     'uid' = toString $user.uid;
@@ -337,7 +336,7 @@ foreach ($proporty in $proporties) {
     "ReHireDate" = toDatetime $user.rehiredate;
     'PasswordNeverExpires' = $passwordNeverExpires;
     'PasswordExpired' = $passwordExpired;
-    'PasswordSet' = $passwordLastSet;
+    'PasswordLastSet' = $passwordLastSet;
     'LastLoginTimestamp' = $lastLogonTimestamp;
     'SmartcardRequired' = $smartcardRequired;
     "ExchangeMailbox" = $exchangeMailbox;
@@ -357,7 +356,7 @@ $UserIdentifiers = $UserIdentifiers | sort -Unique
 
 if ($UserIdentifiers.Count -eq 1) {
 
-  $user = Get-User $UserIdentifiers[0] $BaseDN 
+  $user = Get-User $UserIdentifiers[0] $Base 
   return $user
 
 }
@@ -365,7 +364,7 @@ else {
   $users = @()
   foreach ($UserIdentifier in $UserIdentifiers) {
     try {
-      $user = Get-User $UserIdentifier $BaseDN
+      $user = Get-User $UserIdentifier $Base
       $users += $user
     }
     catch {
