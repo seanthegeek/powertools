@@ -150,12 +150,12 @@ https://github.com/seanthegeek/powertools/tree/master/Get-User
 $ErrorActionPreference = "Stop"
 
 function Get-User {
-  
-  param(
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string]$UserIdentifier,
-    [Parameter(Position = 1, Mandatory = $false)]
-    [string]$Base
+
+param(
+  [Parameter(Position = 0, Mandatory = $true)]
+  [string]$UserIdentifier,
+  [Parameter(Position = 1, Mandatory = $false)]
+  [string]$Base
 )
 
   $ErrorActionPreference = "Stop"
@@ -230,20 +230,20 @@ function Get-User {
 
   if ($null -eq $Base) {
     $objDomain = New-Object System.DirectoryServices.DirectoryEntry
-   }
-   else {
-     $Base = $Base.ToLower()
-     $Base = $Base -replace "ldap://", ""
-     $Base = "LDAP://" + $Base
-     $objDomain = New-Object System.DirectoryServices.DirectoryEntry $Base
-   }
+    }
+    else {
+      $Base = $Base.ToLower()
+      $Base = $Base -replace "ldap://", ""
+      $Base = "LDAP://" + $Base
+      $objDomain = New-Object System.DirectoryServices.DirectoryEntry $Base
+    }
 
   $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
   $objSearcher.SearchRoot = $objDomain
 
-foreach ($proporty in $proporties) {
-  $objSearcher.PropertiesToLoad.Add($proporty) | Out-Null
-}
+  foreach ($proporty in $proporties) {
+    $objSearcher.PropertiesToLoad.Add($proporty) | Out-Null
+  }
 
   $FilterStr = "(&(objectClass=user)(|(userPrincipalName={0})(sAMAccountName={0})(uid={0})(mail={0})(distinguishedName={0})(cn={0})(proxyAddresses=SMTP:{0})))"
   $FilterStr = [string]::Format($FilterStr, $UserIdentifier)
@@ -257,7 +257,7 @@ foreach ($proporty in $proporties) {
     function toString ($value) {
 
     if ($null -eq $value) { return $null }
-    if ($value -is [System.DirectoryServices.ResultPropertyValueCollection]) { $value = $value[0] } 
+    if ($value -is [System.DirectoryServices.ResultPropertyValueCollection]) { $value = $value[0] }
     return [string]$value
   }
 
@@ -295,7 +295,7 @@ foreach ($proporty in $proporties) {
 
   if (((Get-Date) - $lastLogonTimestamp) -le (New-TimeSpan -Days 14)) { 
       $lastLogonTimestamp = "<= 14 days" 
-  } 
+  }
 
   $userHash = [ordered]@{
     'uid' = toString $user.uid;
