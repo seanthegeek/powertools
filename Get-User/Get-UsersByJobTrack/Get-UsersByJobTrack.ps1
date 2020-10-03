@@ -81,9 +81,7 @@ support, information security teams, and pentesters.
 
 .PARAMETER JobTracks
 
-One or more UPNs, SAMaccountnames, or email addresses, separated by commas,
-or a path to a text file containing one identifier per line. Domain prefixes
-are ignored.
+One or more job tracks seperated by commas.
 
 .PARAMETER Base
 
