@@ -81,7 +81,7 @@ support, information security teams, and pentesters.
 
 .PARAMETER JobTracks
 
-One or more job tracks seperated by commas.
+One or more job tracks separated by commas.
 
 .PARAMETER Base
 
