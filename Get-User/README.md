@@ -61,6 +61,10 @@ One or more UPNs, SAMaccountnames, or email addresses, separated by commas,
 or a path to a text file containing one identifier per line. Domain prefixes
 are ignored.
 
+ **Base** (String, Optional)
+
+The domain/ base object to search in.
+
 
 Examples
 --------
