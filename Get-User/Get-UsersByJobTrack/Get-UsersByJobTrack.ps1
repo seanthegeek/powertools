@@ -150,7 +150,7 @@ function Get-UsersByJobTrack {
     "sAMAccountName"
   )
 
-  if ($null -eq $Base) {
+  if ("" -eq $Base) {
     $objDomain = New-Object System.DirectoryServices.DirectoryEntry
     }
     else {
