@@ -24,7 +24,7 @@ EmployeeNumber
 EmployeeClass
 EmployeeType
 Description
-Commment
+Comment
 DistinguishedName
 ManagerDN
 CostCenter
@@ -43,8 +43,10 @@ MemberOf
 ProxyAddresses
 HomeDirectory
 WhenCreated
+WhenChanged
 HireDate
 ReHireDate
+TerminationDate
 PasswordNeverExpires
 PasswordExpired
 PasswordSet
