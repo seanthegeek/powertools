@@ -228,7 +228,7 @@ param(
 
   $UserIdentifier = $UserIdentifier.Split("\")[-1]
 
-  if ($null -eq $Base) {
+  if ("" -eq $Base) {
     $objDomain = New-Object System.DirectoryServices.DirectoryEntry
     }
     else {
