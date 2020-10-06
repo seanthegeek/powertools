@@ -21,7 +21,7 @@ Computers, and/or SharePoint, staff can use this script to obtain the following 
     EmployeeClass
     EmployeeType
     Description
-    Commment
+    Comment
     DistinguishedName
     ManagerDN
     CostCenter
@@ -40,8 +40,10 @@ Computers, and/or SharePoint, staff can use this script to obtain the following 
     ProxyAddresses
     HomeDirectory
     WhenCreated
+    WhenChanged
     HireDate
     ReHireDate
+    TerminationDate
     PasswordNeverExpires
     PasswordExpired
     PasswordSet
