@@ -43,8 +43,10 @@ MemberOf
 ProxyAddresses
 HomeDirectory
 WhenCreated
+WhenChanged
 HireDate
 ReHireDate
+TerminationDate
 PasswordNeverExpires
 PasswordExpired
 PasswordSet
@@ -216,14 +218,16 @@ param(
     "homeDirectory",
     "hireDate",
     "reHireDate",
-    "memberOf"
+    "terminationDate",
+    "memberOf",
     "proxyAddresses",
     "userAccountControl",
     "msExchRecipientTypeDetails",
     "lastLogonTimestamp",
     "pwdLastSet",
     "lockoutTime",
-    "whenCreated"
+    "whenCreated",
+    "whenChanged"
   )
 
   $UserIdentifier = $UserIdentifier.Split("\")[-1]
@@ -274,7 +278,9 @@ param(
   function toDatetime ($value) {
 
     if ($null -eq $value) { return $null }
-    return [datetime][string]$value
+    $value = [string]$value -replace "\s{2,}", ""
+    if ("" -eq $value) { return $null }
+    return [datetime]$value
   }
 
 
@@ -332,8 +338,10 @@ param(
     'ProxyAddresses' = [Array]$user.proxyaddresses; 
     'HomeDirectory' = toString $user.homedirectory;
     'WhenCreated' = toDatetime $user.whencreated;
+    "WhenChanged" = toDatetime $user.whenchanged;
     'HireDate' = toDatetime $user.hiredate;
     "ReHireDate" = toDatetime $user.rehiredate;
+    "TerminationDate" = toDatetime $user.terminationdate;
     'PasswordNeverExpires' = $passwordNeverExpires;
     'PasswordExpired' = $passwordExpired;
     'PasswordLastSet' = $passwordLastSet;
