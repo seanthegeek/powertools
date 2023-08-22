@@ -65,8 +65,7 @@ are ignored.
 
  **Base** (String, Optional)
 
-The domain/ base object to search in.
-
+The domain/base object to search in.
 
 Examples
 --------

@@ -59,7 +59,7 @@ Parameters
 
  **JobTracks** (String, Required)
 
-One or more job tracks seperated by commas.
+One or more job tracks separated by commas.
 
  **Base** (String, Optional)
 
@@ -78,7 +78,7 @@ Get the properties of users for multiple job tracks:
 
 Get the job track user properties of the job tracks listed in the given file
 
-    PS C:\> get-userbyjobtracks tracks.txt
+    PS C:\> get-usersbyjobtracks tracks.txt
 
 Output the results to a CSV file:
 

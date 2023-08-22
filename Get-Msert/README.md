@@ -12,18 +12,18 @@ Setting up the web server
 
 Install the dependencies
 
-    $ sudo apt-get install git python-pip
-    $ git clone https://github.com/seanthegeek/powertools
-    $ cd powertools/get-msert/logmailer
-    $ sudo pip install -r requirements.txt
+    sudo apt-get install git python-pip
+    git clone https://github.com/seanthegeek/powertools
+    cd powertools/get-msert/logmailer
+    sudo pip install -r requirements.txt
 
 Edit the mail configuration
 
-    $ nano config.py
+    nano config.py
 
 Run the server
 
-    $ python logmailer.py &
+    python logmailer.py &
 
 Ensure that TCP port 5000 is reachable
 
