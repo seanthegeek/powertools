@@ -1,4 +1,5 @@
-<#.SYNOPSIS
+<#
+.SYNOPSIS
 Returns Active Directory details for the given groups. Useful for IT
 support, information security teams, and pentesters. Only properties that are
 reliably replicated are included. The returned object can be used with
