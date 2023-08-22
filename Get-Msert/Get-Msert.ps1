@@ -3,7 +3,7 @@
 Downloads and runs Microsoft Safety Scanner for silent remediation, 
 then sends the logs to a web server.
 
-Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
+Author: Sean Whalen (@SeanTheGeek)
 Version: 1.0.0
 Required Dependencies: None
 Optional Dependencies: None

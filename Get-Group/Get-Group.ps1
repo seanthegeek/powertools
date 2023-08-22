@@ -49,7 +49,7 @@ $exitFlag = $False
   $objSearcher.Filter = $FilterStr
   $group = $objSearcher.FindOne()
 
-  if ($group -eq $null) {
+  if ($null -eq $group) {
     throw [string]::Format("{0} was not found", $GroupIdentifier)
    }
 
@@ -57,13 +57,13 @@ $exitFlag = $False
 
    function toString ($value) {
 
-   if ($value -eq $null) { return $null }
+   if ($null -eq $value) { return $null }
    if ($value -is [System.DirectoryServices.ResultPropertyValueCollection]) { $value =$value[0] } 
    return [string]$value
  }
 
  function toInt ($value) {
- if ($value -eq $null) { return $null }
+ if ($null -eq $value) { return $null }
    $value = toString $value
    try {
     $value = [int64]$value
@@ -74,7 +74,7 @@ $exitFlag = $False
 
  function toDatetime ($value) {
 
-   if ($value -eq $null) { return $null }
+   if ($null -eq $value) { return $null }
    return [datetime][string]$value
  }
 
@@ -144,7 +144,7 @@ if ($GroupIdentifiers.count -eq 1 -and (Test-Path -PathType Leaf $GroupIdentifie
     $GroupIdentifiers = Get-Content $GroupIdentifiers[0] | Where-Object { $_ }
   }
   
-  $GroupIdentifiers = $GroupIdentifiers | sort -Unique
+  $GroupIdentifiers = $GroupIdentifiers | Sort-Object -Unique
   
   if ($GroupIdentifiers.count -eq 1) {
     $group = Get-Group $GroupIdentifiers

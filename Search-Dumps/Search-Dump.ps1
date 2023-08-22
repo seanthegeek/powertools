@@ -2,7 +2,7 @@
 .SYNOPSIS
 Searches files for matching strings. Intended for searching data dumps.
 
-Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
+Author: Sean Whalen (@SeanTheGeek)
 Version: 1.0.2
 Required Dependencies: None
 Optional Dependencies: None

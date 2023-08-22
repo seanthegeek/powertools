@@ -2,7 +2,7 @@
 .SYNOPSIS
 Parses and returns entries from a local or remote Windows hosts file.
 
-Author: Sean Whalen (@SeanTheGeek - Sean@SeanPWhalen.com)
+Author: Sean Whalen (@SeanTheGeek)
 Version: 1.0.1
 Required Dependencies: None
 Optional Dependencies: None
