@@ -30,7 +30,7 @@ then sends the logs to a web server.
 PS C:\> get-msert.ps1
 
 .LINK
-https://github.com/seanthegeek/powertools/get-msert
+https://github.com/seanthegeek/powertools/tree/master/Get-Msert
 #>
 
 $LogServer = "192.168.2.63" # Change this to your server address

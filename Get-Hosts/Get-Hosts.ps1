@@ -57,7 +57,7 @@ PS C:\> # Return the hosts file enteries for the local system
 PS C:\> get-hosts.ps1
 
 .LINK
-https://github.com/seanthegeek/powertools/get-hosts
+https://github.com/seanthegeek/powertools/tree/master/Get-Hosts
 #>
 
 [CmdletBinding()] param(

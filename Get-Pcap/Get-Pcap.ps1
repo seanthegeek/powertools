@@ -52,7 +52,7 @@ Overrides the interface to capture instead of auto-detecting it
 
 .LINK
 
-https://github.com/seanthegeek/powertools/Get-PCAP
+https://github.com/seanthegeek/powertools/tree/master/Get-Pcap
 #>
 
 #Requires -Version 3
