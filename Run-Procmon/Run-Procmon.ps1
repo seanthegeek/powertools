@@ -33,7 +33,7 @@ The number of seconds to run Procmon (Default: 60)
 
 .PARAMETER ProcmonPath
 
-The path to the procmon.exe (Default: .\Procmon64)
+The path to the procmon.exe (Default: .\Procmon64.exe)
 
 .PARAMETER BackingFilePath
 
