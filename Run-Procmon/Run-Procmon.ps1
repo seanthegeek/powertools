@@ -4,7 +4,7 @@ Runs Procmon in a minimized state for a period of time and then saves the
 results as a zipped PML file.
 
 Author: Sean Whalen (@SeanTheGeek)
-Version: 1.0.0
+Version: 1.0.1
 Required Dependencies: None
 Optional Dependencies: None
 
@@ -81,26 +81,25 @@ if ("" -eq $OutputPath) {
 }
 
 if ($false -eq (Test-Path -Path $ProcmonPath -PathType Leaf)) {
-    Write-Error ("{0} not found" -f $ProcmonPath)
+    Write-Output ("{0} not found" -f $ProcmonPath)
     exit -1
 }
 
 Start-Process $ProcmonPath  "/AcceptEula", "/Terminate"
 
  if (Test-Path -Path $OutputPath -PathType Leaf) {
-    Write-Error ("{0} already exists." -f $OutputPath)
+    Write-Output ("{0} already exists." -f $OutputPath)
     exit -1
 }
 
 if (Test-Path -Path $BackingFilePath -PathType Leaf) {
-    Write-Error ("{0} already exists." -f $BackingFilePath)
+    Write-Output ("{0} already exists." -f $BackingFilePath)
     exit -1
 }
 
 Start-Process $ProcmonPath "/AcceptEula", "/Quiet", "/Minimized", "/BackingFile", $BackingFilePath
 Start-Sleep -Seconds $Seconds
-Start-Process $ProcmonPath  "/AcceptEula", "/Terminate"
-Start-Sleep 5
+Start-Process -Wait $ProcmonPath  "/AcceptEula", "/Terminate"
 Compress-Archive $BackingFilePath $OutputPath
 if (Test-Path -Path $BackingFilePath -PathType Leaf) {
     Remove-Item $BackingFilePath

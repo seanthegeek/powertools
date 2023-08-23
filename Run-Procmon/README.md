@@ -5,7 +5,7 @@ Runs Procmon in a minimized state for a period of time and then saves the
 results as a zipped PML file.
 
     Author: Sean Whalen (@SeanTheGeek)
-    Version: 1.0.0
+    Version: 1.0.
     Required Dependencies: None
     Optional Dependencies: None
 

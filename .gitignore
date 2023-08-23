@@ -3,3 +3,6 @@
 *.pdf
 *.pml
 *.zip
+*.etl
+*.cab
+*.pcap
