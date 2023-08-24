@@ -1,5 +1,5 @@
-Get-User.ps1
-============
+Get-Group.ps1
+=============
 
 Returns Active Directory details for the given groups. Useful for IT
 support, information security teams, and pentesters. Only properties that are
