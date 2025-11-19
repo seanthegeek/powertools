@@ -24,6 +24,7 @@ Computers, and/or SharePoint, staff can use this script to obtain the following 
     Comment
     DistinguishedName
     ManagerDN
+    ManagerEmail
     CostCenter
     Room
     SiteCode
