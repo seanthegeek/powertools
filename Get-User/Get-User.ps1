@@ -59,7 +59,7 @@ LockedOut
 Disabled
  
 Author: Sean Whalen (@SeanTheGeek)
-Version: 1.4.0
+Version: 1.4.1
 Required Dependencies: None
 Optional Dependencies: None
  
@@ -308,10 +308,14 @@ param(
   }
  
   if ($false -eq $NoRecursion -and $user.manager) {
- 
-    $manager = toString $user.manager
-    $manager = Get-User $manager $Base $true
-    $managerEmail = $manager.email
+    try {
+      $manager = toString $user.manager
+      $manager = Get-User $manager $Base $true
+      $managerEmail = $manager.email
+    }
+    catch {
+      $managerEmail = $null
+    }
   }
  
   $userHash = [ordered]@{
